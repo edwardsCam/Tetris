@@ -63,13 +63,11 @@ MYGAME.graphics = (function() {
 MYGAME.initialize = (function initialize(graphics, images, input) {
     'use strict';
 
-    var lastTimeStamp = performance.now;
-    var elapsedTime;
-    var Timer = 0;
+    MYGAME.currtime = performance.now();
+    MYGAME.timer = 0;
 
     (function setVariables() {
         MYGAME.grid = [];
-        console.log(MYGAME.blocksize);
         for (var i = 0; i < MYGAME.height; i++) {
             MYGAME.grid[i] = [];
             for (var j = 0; j < MYGAME.width; j++) {
@@ -83,14 +81,14 @@ MYGAME.initialize = (function initialize(graphics, images, input) {
     // This is the Game Loop function!
     //
     //------------------------------------------------------------------
-    function gameLoop(time) {
+    function gameLoop() {
 
-        elapsedTime = time - lastTimeStamp;
-        lastTimeStamp = time;
-        Timer += elapsedTime;
+        var delta = performance.now() - MYGAME.currtime;
+        MYGAME.currtime += delta;
+        MYGAME.timer += delta;
 
         GatherInput();
-        UpdateGameLogic(elapsedTime);
+        UpdateGameLogic(delta);
         Render();
 
         requestAnimationFrame(gameLoop);
