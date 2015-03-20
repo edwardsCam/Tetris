@@ -9,10 +9,9 @@
 MYGAME.graphics = (function() {
     'use strict';
 
-    var canvas = document.getElementById('canvas-main'),
-        context = canvas.getContext('2d'),
-        blocksize = canvas.width / 10,
-        grid = [];
+    var canvas = document.getElementById('canvas-main');
+    MYGAME.context = canvas.getContext('2d');
+    MYGAME.blocksize = canvas.width / Math.min(MYGAME.width, MYGAME.height);
 
     //------------------------------------------------------------------
     //
@@ -68,6 +67,17 @@ MYGAME.initialize = (function initialize(graphics, images, input) {
     var elapsedTime;
     var Timer = 0;
 
+    (function setVariables() {
+        MYGAME.grid = [];
+        console.log(MYGAME.blocksize);
+        for (var i = 0; i < MYGAME.height; i++) {
+            MYGAME.grid[i] = [];
+            for (var j = 0; j < MYGAME.width; j++) {
+                MYGAME.grid[i][j] = 0;
+            }
+        }
+    }());
+
     //------------------------------------------------------------------
     //
     // This is the Game Loop function!
@@ -95,7 +105,23 @@ MYGAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function Render() {
+        for (var i = 0; i < MYGAME.height; i++) {
+            for (var j = 0; j < MYGAME.width; j++) {
 
+                var color;
+
+                switch (MYGAME.grid[i][j]) {
+                    case 0:
+                        color = "rgb(0,50,200)";
+                        break;
+                    case 1:
+                        color = "rgb(255,0,0)";
+                        break;
+                }
+                MYGAME.context.fillStyle = color;
+                MYGAME.context.fillRect(i * MYGAME.blocksize, j * MYGAME.blocksize, MYGAME.blocksize, MYGAME.blocksize);
+            }
+        }
     }
 
     return function() {

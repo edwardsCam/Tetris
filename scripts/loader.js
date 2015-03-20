@@ -1,6 +1,9 @@
 var MYGAME = {
     images: {},
 
+    width : 10,
+    height : 20,
+
     status: {
         preloadRequest: 0,
         preloadComplete: 0
