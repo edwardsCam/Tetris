@@ -10,7 +10,9 @@ MYGAME.graphics = (function() {
     'use strict';
 
     var canvas = document.getElementById('canvas-main'),
-        context = canvas.getContext('2d');
+        context = canvas.getContext('2d'),
+        blocksize = canvas.width / 10,
+        grid = [];
 
     //------------------------------------------------------------------
     //
@@ -62,6 +64,9 @@ MYGAME.graphics = (function() {
 MYGAME.initialize = (function initialize(graphics, images, input) {
     'use strict';
 
+    var lastTimeStamp = performance.now;
+    var elapsedTime;
+    var Timer = 0;
 
     //------------------------------------------------------------------
     //
@@ -74,8 +79,24 @@ MYGAME.initialize = (function initialize(graphics, images, input) {
         lastTimeStamp = time;
         Timer += elapsedTime;
 
+        GatherInput();
+        UpdateGameLogic(elapsedTime);
+        Render();
+
         requestAnimationFrame(gameLoop);
     };
+
+    function GatherInput() {
+
+    }
+
+    function UpdateGameLogic(delta) {
+
+    }
+
+    function Render() {
+
+    }
 
     return function() {
         console.log('game initializing...');
@@ -83,7 +104,6 @@ MYGAME.initialize = (function initialize(graphics, images, input) {
         // Have to wait until here to create the texture, because the images aren't
         // loaded and ready until this point.
 
-        setEnvironment();
         requestAnimationFrame(gameLoop);
     };
 }(MYGAME.graphics, MYGAME.images, MYGAME.input));
