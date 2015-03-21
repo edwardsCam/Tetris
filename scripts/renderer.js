@@ -111,15 +111,116 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
         if (GAME.newblocktimer > 10000) {
             GAME.newblocktimer -= 10000;
-            var rx = parseInt(Math.random() * (GAME.width));
-            var rc = parseInt(Math.random() * 7 + 1);
-            var block = {
-                x: rx,
-                y: 0,
-                color: rc
-            };
-            GAME.blocks[GAME.blocks.length] = [block];
-            GAME.grid[block.x][block.y] = block.color;
+            makeNewBlock();
+        }
+    }
+
+    function makeNewBlock() {
+        var block = generateRandomBlock();
+        GAME.blocks[GAME.blocks.length] = [block];
+        placeBlockOnGrid(block);
+    }
+
+    placeBlockOnGrid(block) {
+
+    }
+
+    function generateRandomBlock() {
+
+        var type = parseInt(Math.random() * 7 + 1);
+        var orientation = parseInt(Math.random() * 4);
+
+        /*
+        1 I
+        2 J
+        3 L
+        4 O
+        5 S
+        6 T
+        7 Z
+        */
+
+        switch (type) {
+            case 1: //I
+                {
+                    if (orientation % 2 == 0) {
+
+                    } else {
+
+                    }
+                }
+                break;
+            case 2: //J
+                {
+                    switch (orientation) {
+                        case 0:
+                            {}
+                            break;
+                        case 1:
+                            {}
+                            break;
+                        case 2:
+                            {}
+                            break;
+                        case 3:
+                            {}
+                    }
+                }
+                break;
+            case 3: //L
+                {
+                    switch (orientation) {
+                        case 0:
+                            {}
+                            break;
+                        case 1:
+                            {}
+                            break;
+                        case 2:
+                            {}
+                            break;
+                        case 3:
+                            {}
+                    }
+                }
+                break;
+            case 4: //O
+                {}
+                break;
+            case 5: //S
+                {
+                    if (orientation % 2 == 0) {
+
+                    } else {
+
+                    }
+                }
+                break;
+            case 6: //T
+                {
+                    switch (orientation) {
+                        case 0:
+                            {}
+                            break;
+                        case 1:
+                            {}
+                            break;
+                        case 2:
+                            {}
+                            break;
+                        case 3:
+                            {}
+                    }
+                }
+                break;
+            case 7: //Z
+                {
+                    if (orientation % 2 == 0) {
+
+                    } else {
+
+                    }
+                }
         }
     }
 
@@ -166,7 +267,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             var chunk = block[i];
             var i = chunk.x;
             var j = chunk.y;
-            if (j < GAME.height - 1 && GAME.grid[i][j + 1] == 0) {
+            if (j < GAME.height - 1 && (j >= 0 ? GAME.grid[i][j + 1] == 0 : true)) {
                 GAME.grid[i][j + 1] = chunk.color;
                 GAME.grid[i][j] = 0;
                 chunk.y++;
