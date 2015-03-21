@@ -111,11 +111,13 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
         if (GAME.newblocktimer > 10000) {
             GAME.newblocktimer -= 10000;
-            var rx = parseInt( Math.random() * (GAME.width) );
-            var rc = parseInt( Math.random() * 7 + 1 );
-
-            console.log(rc);
-            var block = {x:rx, y:0, color:rc};
+            var rx = parseInt(Math.random() * (GAME.width));
+            var rc = parseInt(Math.random() * 7 + 1);
+            var block = {
+                x: rx,
+                y: 0,
+                color: rc
+            };
             GAME.blocks[GAME.blocks.length] = [block];
             GAME.grid[block.x][block.y] = block.color;
         }
@@ -134,22 +136,22 @@ GAME.initialize = (function initialize(graphics, images, input) {
                     case 1:
                         color = "rgb(255,0,0)";
                         break;
-                        case 2:
+                    case 2:
                         color = "rgb(255,0,255)";
                         break;
-                        case 3:
+                    case 3:
                         color = "rgb(255,255,0)";
                         break;
-                        case 4:
+                    case 4:
                         color = "rgb(0,255,255)";
                         break;
-                        case 5:
+                    case 5:
                         color = "rgb(0,0,255)";
                         break;
-                        case 6:
+                    case 6:
                         color = "rgb(200,200,200)";
                         break;
-                        case 7:
+                    case 7:
                         color = "rgb(0,255,0)";
                         break;
                 }
@@ -164,8 +166,8 @@ GAME.initialize = (function initialize(graphics, images, input) {
             var chunk = block[i];
             var i = chunk.x;
             var j = chunk.y;
-            if (j < GAME.height-1 && GAME.grid[i][j+1] == 0) {
-                GAME.grid[i][j+1] = chunk.color;
+            if (j < GAME.height - 1 && GAME.grid[i][j + 1] == 0) {
+                GAME.grid[i][j + 1] = chunk.color;
                 GAME.grid[i][j] = 0;
                 chunk.y++;
             }
