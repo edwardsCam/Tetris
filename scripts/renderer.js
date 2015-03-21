@@ -280,21 +280,89 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         case 0:
                             {
                                 startx = random(len - 2);
+                                ret = [{
+                                    x: startx,
+                                    y: 0,
+                                    color: 2
+                                }, {
+                                    x: startx + 1,
+                                    y: 0,
+                                    color: 2
+                                }, {
+                                    x: startx,
+                                    y: -1,
+                                    color: 2
+                                }, {
+                                    x: startx,
+                                    y: -2,
+                                    color: 2
+                                }];
                             }
                             break;
                         case 1:
                             {
                                 startx = random(len - 3);
+                                ret = [{
+                                    x: startx,
+                                    y: 0,
+                                    color: 2
+                                }, {
+                                    x: startx,
+                                    y: -1,
+                                    color: 2
+                                }, {
+                                    x: startx + 1,
+                                    y: -1,
+                                    color: 2
+                                }, {
+                                    x: startx + 2,
+                                    y: -1,
+                                    color: 2
+                                }];
                             }
                             break;
                         case 2:
                             {
                                 startx = random(len - 2);
+                                ret = [{
+                                    x: startx + 1,
+                                    y: 0,
+                                    color: 2
+                                }, {
+                                    x: startx + 1,
+                                    y: -1,
+                                    color: 2
+                                }, {
+                                    x: startx + 1,
+                                    y: -2,
+                                    color: 2
+                                }, {
+                                    x: startx,
+                                    y: -2,
+                                    color: 2
+                                }];
                             }
                             break;
                         case 3:
                             {
                                 startx = random(len - 3);
+                                ret = [{
+                                    x: startx,
+                                    y: 0,
+                                    color: 2
+                                }, {
+                                    x: startx + 1,
+                                    y: 0,
+                                    color: 2
+                                }, {
+                                    x: startx + 2,
+                                    y: 0,
+                                    color: 2
+                                }, {
+                                    x: startx + 2,
+                                    y: -1,
+                                    color: 2
+                                }];
                             }
                     }
                 }
@@ -302,6 +370,23 @@ GAME.initialize = (function initialize(graphics, images, input) {
             case 4: //O
                 {
                     var startx = random(len - 2);
+                    ret = [{
+                        x: startx,
+                        y: 0,
+                        color: 2
+                    }, {
+                        x: startx + 1,
+                        y: 0,
+                        color: 2
+                    }, {
+                        x: startx,
+                        y: -1,
+                        color: 2
+                    }, {
+                        x: startx + 1,
+                        y: -1,
+                        color: 2
+                    }];
                 }
                 break;
             case 5: //S
