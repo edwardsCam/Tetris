@@ -125,10 +125,17 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
     }
 
+    function random(top) {
+        var ret = parseInt(Math.random() * top + 1);
+        if (ret < 0)
+            return 0;
+        return ret;
+    }
+
     function generateRandomBlock() {
 
-        var type = parseInt(Math.random() * 7 + 1);
-        var orientation = parseInt(Math.random() * 4);
+        var type = random(6) + 1;
+        var orientation = random(3);
 
         /*
         1 I
@@ -140,59 +147,83 @@ GAME.initialize = (function initialize(graphics, images, input) {
         7 Z
         */
 
+        var len = GAME.width;
+
         switch (type) {
             case 1: //I
                 {
+                    var startx;
                     if (orientation % 2 == 0) {
-
+                        startx = random(len - 4);
                     } else {
-
+                        startx = random(len - 1);
                     }
                 }
                 break;
             case 2: //J
                 {
+                    var startx;
                     switch (orientation) {
                         case 0:
-                            {}
+                            {
+                                startx = random(len - 2);
+                            }
                             break;
                         case 1:
-                            {}
+                            {
+                                startx = random(len - 3);
+                            }
                             break;
                         case 2:
-                            {}
+                            {
+                                startx = random(len - 2);
+                            }
                             break;
                         case 3:
-                            {}
+                            {
+                                startx = random(len - 3);
+                            }
                     }
                 }
                 break;
             case 3: //L
                 {
+                    var startx;
                     switch (orientation) {
                         case 0:
-                            {}
+                            {
+                                startx = random(len - 2);
+                            }
                             break;
                         case 1:
-                            {}
+                            {
+                                startx = random(len - 3);
+                            }
                             break;
                         case 2:
-                            {}
+                            {
+                                startx = random(len - 2);
+                            }
                             break;
                         case 3:
-                            {}
+                            {
+                                startx = random(len - 3);
+                            }
                     }
                 }
                 break;
             case 4: //O
-                {}
+                {
+                    var startx = random(len - 2);
+                }
                 break;
             case 5: //S
                 {
+                    var startx;
                     if (orientation % 2 == 0) {
-
+                        startx = random(len - 3);
                     } else {
-
+                        startx = random(len - 3);
                     }
                 }
                 break;
@@ -200,25 +231,34 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 {
                     switch (orientation) {
                         case 0:
-                            {}
+                            {
+                                startx = random(len - 3);
+                            }
                             break;
                         case 1:
-                            {}
+                            {
+                                startx = random(len - 2);
+                            }
                             break;
                         case 2:
-                            {}
+                            {
+                                startx = random(len - 3);
+                            }
                             break;
                         case 3:
-                            {}
+                            {
+                                startx = random(len - 2);
+                            }
                     }
                 }
                 break;
             case 7: //Z
                 {
+                    var startx;
                     if (orientation % 2 == 0) {
-
+                        startx = random(len - 3);
                     } else {
-
+                        startx = random(len - 3);
                     }
                 }
         }
