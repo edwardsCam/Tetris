@@ -1,17 +1,17 @@
 /*jslint browser: true, white: true */
-/*global CanvasRenderingContext2D, requestAnimationFrame, console, MYGAME */
+/*global CanvasRenderingContext2D, requestAnimationFrame, console, GAME */
 // ------------------------------------------------------------------
 // 
 // This is the game object.  Everything about the game is located in 
 // this object.
 //
 // ------------------------------------------------------------------
-MYGAME.graphics = (function() {
+GAME.graphics = (function() {
     'use strict';
 
     var canvas = document.getElementById('canvas-main');
-    MYGAME.context = canvas.getContext('2d');
-    MYGAME.blocksize = canvas.width / Math.min(MYGAME.width, MYGAME.height);
+    GAME.context = canvas.getContext('2d');
+    GAME.blocksize = canvas.width / Math.min(GAME.width, GAME.height);
 
     //------------------------------------------------------------------
     //
@@ -60,18 +60,20 @@ MYGAME.graphics = (function() {
 // This function performs the one-time game initialization.
 //
 //------------------------------------------------------------------
-MYGAME.initialize = (function initialize(graphics, images, input) {
+GAME.initialize = (function initialize(graphics, images, input) {
     'use strict';
 
-    MYGAME.currtime = performance.now();
-    MYGAME.timer = 0;
+    GAME.currtime = performance.now();
+    GAME.falltimer = 0;
+    GAME.newblocktimer = 10000;
 
     (function setVariables() {
-        MYGAME.grid = [];
-        for (var i = 0; i < MYGAME.height; i++) {
-            MYGAME.grid[i] = [];
-            for (var j = 0; j < MYGAME.width; j++) {
-                MYGAME.grid[i][j] = 0;
+        GAME.blocks = [];
+        GAME.grid = [];
+        for (var i = 0; i < GAME.width; i++) {
+            GAME.grid[i] = [];
+            for (var j = 0; j < GAME.height; j++) {
+                GAME.grid[i][j] = 0;
             }
         }
     }());
@@ -83,9 +85,10 @@ MYGAME.initialize = (function initialize(graphics, images, input) {
     //------------------------------------------------------------------
     function gameLoop() {
 
-        var delta = performance.now() - MYGAME.currtime;
-        MYGAME.currtime += delta;
-        MYGAME.timer += delta;
+        var delta = performance.now() - GAME.currtime;
+        GAME.currtime += delta;
+        GAME.falltimer += delta;
+        GAME.newblocktimer += delta;
 
         GatherInput();
         UpdateGameLogic(delta);
@@ -99,16 +102,28 @@ MYGAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function UpdateGameLogic(delta) {
+        if (GAME.falltimer > 1000) {
+            GAME.falltimer -= 1000;
+            for (var i = 0; i < GAME.blocks.length; i++) {
+                fall(GAME.blocks[i]);
+            }
+        }
 
+        if (GAME.newblocktimer > 10000) {
+            GAME.newblocktimer -= 10000;
+            var block = {x:0, y:0, color:1};
+            GAME.blocks[GAME.blocks.length] = [block];
+            GAME.grid[block.x][block.y] = block.color;
+        }
     }
 
     function Render() {
-        for (var i = 0; i < MYGAME.height; i++) {
-            for (var j = 0; j < MYGAME.width; j++) {
+        for (var i = 0; i < GAME.width; i++) {
+            for (var j = 0; j < GAME.height; j++) {
 
                 var color;
 
-                switch (MYGAME.grid[i][j]) {
+                switch (GAME.grid[i][j]) {
                     case 0:
                         color = "rgb(0,50,200)";
                         break;
@@ -116,8 +131,21 @@ MYGAME.initialize = (function initialize(graphics, images, input) {
                         color = "rgb(255,0,0)";
                         break;
                 }
-                MYGAME.context.fillStyle = color;
-                MYGAME.context.fillRect(i * MYGAME.blocksize, j * MYGAME.blocksize, MYGAME.blocksize, MYGAME.blocksize);
+                GAME.context.fillStyle = color;
+                GAME.context.fillRect(i * GAME.blocksize, j * GAME.blocksize, GAME.blocksize, GAME.blocksize);
+            }
+        }
+    }
+
+    function fall(block) {
+        for (var i = 0; i < block.length; i++) {
+            var chunk = block[i];
+            var i = chunk.x;
+            var j = chunk.y;
+            if (j < GAME.height-1 && GAME.grid[i][j+1] == 0) {
+                GAME.grid[i][j+1] = chunk.color;
+                GAME.grid[i][j] = 0;
+                chunk.y++;
             }
         }
     }
@@ -130,4 +158,4 @@ MYGAME.initialize = (function initialize(graphics, images, input) {
 
         requestAnimationFrame(gameLoop);
     };
-}(MYGAME.graphics, MYGAME.images, MYGAME.input));
+}(GAME.graphics, GAME.images, GAME.input));

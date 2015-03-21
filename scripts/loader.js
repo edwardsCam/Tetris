@@ -1,4 +1,4 @@
-var MYGAME = {
+var GAME = {
     images: {},
 
     width : 10,
@@ -37,22 +37,22 @@ window.addEventListener('load', function() {
 yepnope.addPrefix('preload', function(resource) {
     console.log('preloading: ' + resource.url);
 
-    MYGAME.status.preloadRequest += 1;
+    GAME.status.preloadRequest += 1;
     var isImage = /.+\.(jpg|png|gif)$/i.test(resource.url);
     resource.noexec = isImage;
     resource.autoCallback = function(e) {
         if (isImage) {
             var image = new Image();
             image.src = resource.url;
-            MYGAME.images[resource.url] = image;
+            GAME.images[resource.url] = image;
         }
-        MYGAME.status.preloadComplete += 1;
+        GAME.status.preloadComplete += 1;
 
         //
         // When everything has finished preloading, go ahead and start the game
-        if (MYGAME.status.preloadComplete === MYGAME.status.preloadRequest) {
+        if (GAME.status.preloadComplete === GAME.status.preloadRequest) {
             console.log('Preloading complete!');
-            MYGAME.initialize();
+            GAME.initialize();
         }
     };
 
