@@ -11,7 +11,7 @@ GAME.graphics = (function() {
 
     var canvas = document.getElementById('canvas-main');
     GAME.context = canvas.getContext('2d');
-    GAME.blocksize = canvas.width / Math.min(GAME.width, GAME.height);
+    GAME.blocksize = canvas.width / (Math.min(GAME.width, GAME.height) * 2);
 
     //------------------------------------------------------------------
     //
@@ -111,7 +111,11 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
         if (GAME.newblocktimer > 10000) {
             GAME.newblocktimer -= 10000;
-            var block = {x:0, y:0, color:1};
+            var rx = parseInt( Math.random() * (GAME.width) );
+            var rc = parseInt( Math.random() * 7 + 1 );
+
+            console.log(rc);
+            var block = {x:rx, y:0, color:rc};
             GAME.blocks[GAME.blocks.length] = [block];
             GAME.grid[block.x][block.y] = block.color;
         }
@@ -125,10 +129,28 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
                 switch (GAME.grid[i][j]) {
                     case 0:
-                        color = "rgb(0,50,200)";
+                        color = "rgb(50,50,50)";
                         break;
                     case 1:
                         color = "rgb(255,0,0)";
+                        break;
+                        case 2:
+                        color = "rgb(255,0,255)";
+                        break;
+                        case 3:
+                        color = "rgb(255,255,0)";
+                        break;
+                        case 4:
+                        color = "rgb(0,255,255)";
+                        break;
+                        case 5:
+                        color = "rgb(0,0,255)";
+                        break;
+                        case 6:
+                        color = "rgb(200,200,200)";
+                        break;
+                        case 7:
+                        color = "rgb(0,255,0)";
                         break;
                 }
                 GAME.context.fillStyle = color;
