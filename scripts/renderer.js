@@ -65,7 +65,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
     GAME.currtime = performance.now();
     GAME.falltimer = 0;
-    GAME.newblocktimer = 10000;
+    GAME.newblocktimer = 5000;
 
     (function setVariables() {
         GAME.blocks = [];
@@ -109,15 +109,15 @@ GAME.initialize = (function initialize(graphics, images, input) {
             }
         }
 
-        if (GAME.newblocktimer > 10000) {
-            GAME.newblocktimer -= 10000;
+        if (GAME.newblocktimer > 5000) {
+            GAME.newblocktimer -= 5000;
             makeNewBlock();
         }
     }
 
     function makeNewBlock() {
         var block = generateRandomBlock();
-        GAME.blocks[GAME.blocks.length] = [block];
+        GAME.blocks[GAME.blocks.length] = block;
         placeBlockOnGrid(block);
     }
 
@@ -129,10 +129,46 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function random(top) {
-        var ret = parseInt(Math.random() * top + 1);
+        var ret = Math.floor(Math.random() * top + 1);
         if (ret < 0)
             return 0;
         return ret;
+    }
+
+    function fall(block) {
+        var cando = true;
+        var xes = [];
+        for (var b = 0; b < 4; b++) {
+            var chunk = block[b];
+            var i = chunk.x;
+            var j = chunk.y;
+            var go = true;
+            for (var p = 0; p < xes.length; p++) {
+                if (xes[p] == i) {
+                    go = false;
+                    break;
+                }
+            }
+            if (go) {
+                xes[xes.length] = i;
+            if (!(j < GAME.height - 1 && (j >= 0 ? GAME.grid[i][j + 1] == 0 : true))) {
+                cando = false;
+            }
+            }
+            
+        }
+
+        if (cando) {
+            for (var b = 0; b < 4; b++) {
+                var chunk = block[b];
+                var i = chunk.x;
+                var j = chunk.y;
+                GAME.grid[i][j + 1] = chunk.color;
+                GAME.grid[i][j] = 0;
+                chunk.y++;
+            }
+
+        }
     }
 
     function generateRandomBlock() {
@@ -608,19 +644,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 }
                 GAME.context.fillStyle = color;
                 GAME.context.fillRect(i * GAME.blocksize, j * GAME.blocksize, GAME.blocksize, GAME.blocksize);
-            }
-        }
-    }
-
-    function fall(block) {
-        for (var i = 0; i < 4; i++) {
-            var chunk = block[i];
-            var i = chunk.x;
-            var j = chunk.y;
-            if (j < GAME.height - 1 && (j >= 0 ? GAME.grid[i][j + 1] == 0 : true)) {
-                GAME.grid[i][j + 1] = chunk.color;
-                GAME.grid[i][j] = 0;
-                chunk.y++;
             }
         }
     }
