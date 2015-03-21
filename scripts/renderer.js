@@ -283,19 +283,19 @@ GAME.initialize = (function initialize(graphics, images, input) {
                                 ret = [{
                                     x: startx,
                                     y: 0,
-                                    color: 2
+                                    color: 3
                                 }, {
                                     x: startx + 1,
                                     y: 0,
-                                    color: 2
+                                    color: 3
                                 }, {
                                     x: startx,
                                     y: -1,
-                                    color: 2
+                                    color: 3
                                 }, {
                                     x: startx,
                                     y: -2,
-                                    color: 2
+                                    color: 3
                                 }];
                             }
                             break;
@@ -305,19 +305,19 @@ GAME.initialize = (function initialize(graphics, images, input) {
                                 ret = [{
                                     x: startx,
                                     y: 0,
-                                    color: 2
+                                    color: 3
                                 }, {
                                     x: startx,
                                     y: -1,
-                                    color: 2
+                                    color: 3
                                 }, {
                                     x: startx + 1,
                                     y: -1,
-                                    color: 2
+                                    color: 3
                                 }, {
                                     x: startx + 2,
                                     y: -1,
-                                    color: 2
+                                    color: 3
                                 }];
                             }
                             break;
@@ -327,19 +327,19 @@ GAME.initialize = (function initialize(graphics, images, input) {
                                 ret = [{
                                     x: startx + 1,
                                     y: 0,
-                                    color: 2
+                                    color: 3
                                 }, {
                                     x: startx + 1,
                                     y: -1,
-                                    color: 2
+                                    color: 3
                                 }, {
                                     x: startx + 1,
                                     y: -2,
-                                    color: 2
+                                    color: 3
                                 }, {
                                     x: startx,
                                     y: -2,
-                                    color: 2
+                                    color: 3
                                 }];
                             }
                             break;
@@ -349,19 +349,19 @@ GAME.initialize = (function initialize(graphics, images, input) {
                                 ret = [{
                                     x: startx,
                                     y: 0,
-                                    color: 2
+                                    color: 3
                                 }, {
                                     x: startx + 1,
                                     y: 0,
-                                    color: 2
+                                    color: 3
                                 }, {
                                     x: startx + 2,
                                     y: 0,
-                                    color: 2
+                                    color: 3
                                 }, {
                                     x: startx + 2,
                                     y: -1,
-                                    color: 2
+                                    color: 3
                                 }];
                             }
                     }
@@ -373,19 +373,19 @@ GAME.initialize = (function initialize(graphics, images, input) {
                     ret = [{
                         x: startx,
                         y: 0,
-                        color: 2
+                        color: 4
                     }, {
                         x: startx + 1,
                         y: 0,
-                        color: 2
+                        color: 4
                     }, {
                         x: startx,
                         y: -1,
-                        color: 2
+                        color: 4
                     }, {
                         x: startx + 1,
                         y: -1,
-                        color: 2
+                        color: 4
                     }];
                 }
                 break;
@@ -397,38 +397,38 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         ret = [{
                             x: startx,
                             y: 0,
-                            color: 2
+                            color: 5
                         }, {
                             x: startx + 1,
                             y: 0,
-                            color: 2
+                            color: 5
                         }, {
                             x: startx + 1,
                             y: -1,
-                            color: 2
+                            color: 5
                         }, {
                             x: startx + 2,
                             y: -1,
-                            color: 2
+                            color: 5
                         }];
                     } else {
                         startx = random(len - 3);
                         ret = [{
                             x: startx + 1,
                             y: 0,
-                            color: 2
+                            color: 5
                         }, {
                             x: startx + 1,
                             y: -1,
-                            color: 2
+                            color: 5
                         }, {
                             x: startx,
                             y: -1,
-                            color: 2
+                            color: 5
                         }, {
                             x: startx,
                             y: -2,
-                            color: 2
+                            color: 5
                         }];
                     }
                 }
@@ -442,19 +442,19 @@ GAME.initialize = (function initialize(graphics, images, input) {
                                 ret = [{
                                     x: startx + 1,
                                     y: 0,
-                                    color: 2
+                                    color: 6
                                 }, {
                                     x: startx,
                                     y: -1,
-                                    color: 2
+                                    color: 6
                                 }, {
                                     x: startx + 1,
                                     y: -1,
-                                    color: 2
+                                    color: 6
                                 }, {
                                     x: startx + 2,
                                     y: -1,
-                                    color: 2
+                                    color: 6
                                 }];
                             }
                             break;
@@ -464,19 +464,19 @@ GAME.initialize = (function initialize(graphics, images, input) {
                                 ret = [{
                                     x: startx + 1,
                                     y: 0,
-                                    color: 2
+                                    color: 6
                                 }, {
                                     x: startx + 1,
                                     y: -1,
-                                    color: 2
+                                    color: 6
                                 }, {
                                     x: startx,
                                     y: -1,
-                                    color: 2
+                                    color: 6
                                 }, {
                                     x: startx + 1,
                                     y: -2,
-                                    color: 2
+                                    color: 6
                                 }];
                             }
                             break;
@@ -486,19 +486,19 @@ GAME.initialize = (function initialize(graphics, images, input) {
                                 ret = [{
                                     x: startx,
                                     y: 0,
-                                    color: 2
+                                    color: 6
                                 }, {
                                     x: startx + 1,
                                     y: 0,
-                                    color: 2
+                                    color: 6
                                 }, {
                                     x: startx + 2,
                                     y: 0,
-                                    color: 2
+                                    color: 6
                                 }, {
                                     x: startx + 1,
                                     y: -1,
-                                    color: 2
+                                    color: 6
                                 }];
                             }
                             break;
@@ -508,19 +508,19 @@ GAME.initialize = (function initialize(graphics, images, input) {
                                 ret = [{
                                     x: startx,
                                     y: 0,
-                                    color: 2
+                                    color: 6
                                 }, {
                                     x: startx,
                                     y: -1,
-                                    color: 2
+                                    color: 6
                                 }, {
                                     x: startx + 1,
                                     y: -1,
-                                    color: 2
+                                    color: 6
                                 }, {
                                     x: startx,
                                     y: -2,
-                                    color: 2
+                                    color: 6
                                 }];
                             }
                     }
@@ -534,38 +534,38 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         ret = [{
                             x: startx + 1,
                             y: 0,
-                            color: 2
+                            color: 7
                         }, {
                             x: startx + 2,
                             y: 0,
-                            color: 2
+                            color: 7
                         }, {
                             x: startx + 1,
                             y: -1,
-                            color: 2
+                            color: 7
                         }, {
                             x: startx,
                             y: -1,
-                            color: 2
+                            color: 7
                         }];
                     } else {
                         startx = random(len - 3);
                         ret = [{
                             x: startx,
                             y: 0,
-                            color: 2
+                            color: 7
                         }, {
                             x: startx,
                             y: -1,
-                            color: 2
+                            color: 7
                         }, {
                             x: startx + 1,
                             y: -1,
-                            color: 2
+                            color: 7
                         }, {
                             x: startx + 1,
                             y: -2,
-                            color: 2
+                            color: 7
                         }];
                     }
                 }
@@ -613,7 +613,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function fall(block) {
-        for (var i = 0; i < block.length; i++) {
+        for (var i = 0; i < 4; i++) {
             var chunk = block[i];
             var i = chunk.x;
             var j = chunk.y;
