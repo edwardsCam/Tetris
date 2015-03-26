@@ -164,7 +164,11 @@ GAME.initialize = (function initialize(graphics, images, input) {
     function removeBlockFromGrid(block) {
         for (var i = 0; i < 4; i++) {
             var bl = block.b[i];
-            GAME.grid[bl.x][bl.y] = 0;
+            var x = bl.x;
+            var y = bl.y;
+            if (x >= 0 && x < GAME.width && y >= 0 && y < GAME.height) {
+                GAME.grid[bl.x][bl.y] = 0;
+            }
         }
     }
 
