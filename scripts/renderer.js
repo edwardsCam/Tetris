@@ -216,7 +216,13 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function move(block, dist) {
-
+        var ret = block;
+        if (dist > 0) {
+            for (var i = 0; i < 4; i++) {
+                ret[i].x += dist;
+            }
+        }
+        return ret;
     }
 
     function generateRandomBlock() {
