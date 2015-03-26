@@ -129,7 +129,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function random(top) {
-        var ret = Math.floor(Math.random() * top + 1);
+        var ret = Math.floor(Math.random() * top) + 1;
         if (ret < 0)
             return 0;
         return ret;
@@ -151,11 +151,11 @@ GAME.initialize = (function initialize(graphics, images, input) {
             }
             if (go) {
                 xes[xes.length] = i;
-            if (!(j < GAME.height - 1 && (j >= 0 ? GAME.grid[i][j + 1] == 0 : true))) {
-                cando = false;
+                if (!(j < GAME.height - 1 && (j >= 0 ? GAME.grid[i][j + 1] == 0 : true))) {
+                    cando = false;
+                }
             }
-            }
-            
+
         }
 
         if (cando) {
@@ -169,6 +169,54 @@ GAME.initialize = (function initialize(graphics, images, input) {
             }
 
         }
+    }
+
+    function rotate(block) {
+        var ret = [];
+
+        switch (block.color) {
+            case 1:
+                {
+
+                }
+                break;
+            case 2:
+                {
+
+                }
+                break;
+            case 3:
+                {
+
+                }
+                break;
+            case 4:
+                {
+                    ret = block;
+                }
+                break;
+            case 5:
+                {
+
+                }
+                break;
+            case 6:
+                {
+
+                }
+                break;
+            case 7:
+                {
+
+                }
+                break;
+        }
+
+        return ret;
+    }
+
+    function move(block, dist) {
+
     }
 
     function generateRandomBlock() {
@@ -193,416 +241,177 @@ GAME.initialize = (function initialize(graphics, images, input) {
         switch (type) {
             case 1: //I
                 {
-                    var startx;
-                    if (orientation % 2 == 0) {
-                        startx = random(len - 4);
-                        for (var i = 0; i < 4; i++) {
-                            ret[ret.length] = {
-                                x: i + startx,
-                                y: 0,
-                                color: 1
-                            };
-                        }
-                    } else {
-                        startx = random(len - 1);
-                        for (var i = 0; i < 4; i++) {
-                            ret[ret.length] = {
-                                x: startx,
-                                y: 0 - i,
-                                color: 1
-                            };
-                        }
+                    ret = [{
+                        x: 0,
+                        y: 0,
+                        color: 1
+                    }, {
+                        x: 1,
+                        y: 0,
+                        color: 1
+                    }, {
+                        x: 2,
+                        y: 0,
+                        color: 1
+                    }, {
+                        x: 3,
+                        y: 0,
+                        color: 1
+                    }];
+
+                    ret = move(ret, random(len - 4));
+                    for (var i = 0; i < orientation % 2; i++) {
+                        ret = rotate(ret);
                     }
+
                 }
                 break;
+
+
             case 2: //J
                 {
-                    var startx;
-                    switch (orientation) {
-                        case 0:
-                            {
-                                startx = random(len - 2);
-                                ret = [{
-                                    x: startx,
-                                    y: 0,
-                                    color: 2
-                                }, {
-                                    x: startx + 1,
-                                    y: 0,
-                                    color: 2
-                                }, {
-                                    x: startx + 1,
-                                    y: -1,
-                                    color: 2
-                                }, {
-                                    x: startx + 1,
-                                    y: -2,
-                                    color: 2
-                                }];
-                            }
-                            break;
-                        case 1:
-                            {
-                                startx = random(len - 3);
-                                ret = [{
-                                    x: startx,
-                                    y: 0,
-                                    color: 2
-                                }, {
-                                    x: startx + 1,
-                                    y: 0,
-                                    color: 2
-                                }, {
-                                    x: startx + 2,
-                                    y: 0,
-                                    color: 2
-                                }, {
-                                    x: startx,
-                                    y: -1,
-                                    color: 2
-                                }];
-                            }
-                            break;
-                        case 2:
-                            {
-                                startx = random(len - 2);
-                                ret = [{
-                                    x: startx,
-                                    y: 0,
-                                    color: 2
-                                }, {
-                                    x: startx,
-                                    y: -1,
-                                    color: 2
-                                }, {
-                                    x: startx,
-                                    y: -2,
-                                    color: 2
-                                }, {
-                                    x: startx + 1,
-                                    y: -2,
-                                    color: 2
-                                }];
-                            }
-                            break;
-                        case 3:
-                            {
-                                startx = random(len - 3);
-                                ret = [{
-                                    x: startx + 2,
-                                    y: 0,
-                                    color: 2
-                                }, {
-                                    x: startx,
-                                    y: 0,
-                                    color: 2
-                                }, {
-                                    x: startx + 1,
-                                    y: 0,
-                                    color: 2
-                                }, {
-                                    x: startx + 2,
-                                    y: 0,
-                                    color: 2
-                                }];
-                            }
+                    ret = [{
+                        x: 0,
+                        y: 0,
+                        color: 2
+                    }, {
+                        x: 1,
+                        y: 0,
+                        color: 2
+                    }, {
+                        x: 1,
+                        y: -1,
+                        color: 2
+                    }, {
+                        x: 1,
+                        y: -2,
+                        color: 2
+                    }];
+                    ret = move(ret, random(len - 2));
+                    for (var i = 0; i < orientation; i++) {
+                        ret = rotate(ret);
                     }
                 }
                 break;
             case 3: //L
                 {
-                    var startx;
-                    switch (orientation) {
-                        case 0:
-                            {
-                                startx = random(len - 2);
-                                ret = [{
-                                    x: startx,
-                                    y: 0,
-                                    color: 3
-                                }, {
-                                    x: startx + 1,
-                                    y: 0,
-                                    color: 3
-                                }, {
-                                    x: startx,
-                                    y: -1,
-                                    color: 3
-                                }, {
-                                    x: startx,
-                                    y: -2,
-                                    color: 3
-                                }];
-                            }
-                            break;
-                        case 1:
-                            {
-                                startx = random(len - 3);
-                                ret = [{
-                                    x: startx,
-                                    y: 0,
-                                    color: 3
-                                }, {
-                                    x: startx,
-                                    y: -1,
-                                    color: 3
-                                }, {
-                                    x: startx + 1,
-                                    y: -1,
-                                    color: 3
-                                }, {
-                                    x: startx + 2,
-                                    y: -1,
-                                    color: 3
-                                }];
-                            }
-                            break;
-                        case 2:
-                            {
-                                startx = random(len - 2);
-                                ret = [{
-                                    x: startx + 1,
-                                    y: 0,
-                                    color: 3
-                                }, {
-                                    x: startx + 1,
-                                    y: -1,
-                                    color: 3
-                                }, {
-                                    x: startx + 1,
-                                    y: -2,
-                                    color: 3
-                                }, {
-                                    x: startx,
-                                    y: -2,
-                                    color: 3
-                                }];
-                            }
-                            break;
-                        case 3:
-                            {
-                                startx = random(len - 3);
-                                ret = [{
-                                    x: startx,
-                                    y: 0,
-                                    color: 3
-                                }, {
-                                    x: startx + 1,
-                                    y: 0,
-                                    color: 3
-                                }, {
-                                    x: startx + 2,
-                                    y: 0,
-                                    color: 3
-                                }, {
-                                    x: startx + 2,
-                                    y: -1,
-                                    color: 3
-                                }];
-                            }
+                    ret = [{
+                        x: 1,
+                        y: 0,
+                        color: 3
+                    }, {
+                        x: 0,
+                        y: 0,
+                        color: 3
+                    }, {
+                        x: 0,
+                        y: -1,
+                        color: 3
+                    }, {
+                        x: 0,
+                        y: -2,
+                        color: 3
+                    }];
+                    ret = move(ret, random(len - 2));
+                    for (var i = 0; i < orientation; i++) {
+                        ret = rotate(ret);
                     }
                 }
                 break;
             case 4: //O
                 {
-                    var startx = random(len - 2);
                     ret = [{
-                        x: startx,
+                        x: 0,
                         y: 0,
                         color: 4
                     }, {
-                        x: startx + 1,
+                        x: 1,
                         y: 0,
                         color: 4
                     }, {
-                        x: startx,
+                        x: 1,
                         y: -1,
                         color: 4
                     }, {
-                        x: startx + 1,
+                        x: 0,
                         y: -1,
                         color: 4
                     }];
+                    ret = move(ret, random(len - 2));
                 }
                 break;
             case 5: //S
                 {
-                    var startx;
-                    if (orientation % 2 == 0) {
-                        startx = random(len - 3);
-                        ret = [{
-                            x: startx,
-                            y: 0,
-                            color: 5
-                        }, {
-                            x: startx + 1,
-                            y: 0,
-                            color: 5
-                        }, {
-                            x: startx + 1,
-                            y: -1,
-                            color: 5
-                        }, {
-                            x: startx + 2,
-                            y: -1,
-                            color: 5
-                        }];
-                    } else {
-                        startx = random(len - 3);
-                        ret = [{
-                            x: startx + 1,
-                            y: 0,
-                            color: 5
-                        }, {
-                            x: startx + 1,
-                            y: -1,
-                            color: 5
-                        }, {
-                            x: startx,
-                            y: -1,
-                            color: 5
-                        }, {
-                            x: startx,
-                            y: -2,
-                            color: 5
-                        }];
+                    ret = [{
+                        x: 0,
+                        y: 0,
+                        color: 5
+                    }, {
+                        x: 1,
+                        y: 0,
+                        color: 5
+                    }, {
+                        x: 1,
+                        y: -1,
+                        color: 5
+                    }, {
+                        x: 2,
+                        y: -1,
+                        color: 5
+                    }];
+                    ret = move(ret, random(len - 3));
+                    for (var i = 0; i < orientation % 2; i++) {
+                        ret = rotate(ret);
                     }
                 }
                 break;
             case 6: //T
                 {
-                    switch (orientation) {
-                        case 0:
-                            {
-                                startx = random(len - 3);
-                                ret = [{
-                                    x: startx + 1,
-                                    y: 0,
-                                    color: 6
-                                }, {
-                                    x: startx,
-                                    y: -1,
-                                    color: 6
-                                }, {
-                                    x: startx + 1,
-                                    y: -1,
-                                    color: 6
-                                }, {
-                                    x: startx + 2,
-                                    y: -1,
-                                    color: 6
-                                }];
-                            }
-                            break;
-                        case 1:
-                            {
-                                startx = random(len - 2);
-                                ret = [{
-                                    x: startx + 1,
-                                    y: 0,
-                                    color: 6
-                                }, {
-                                    x: startx + 1,
-                                    y: -1,
-                                    color: 6
-                                }, {
-                                    x: startx,
-                                    y: -1,
-                                    color: 6
-                                }, {
-                                    x: startx + 1,
-                                    y: -2,
-                                    color: 6
-                                }];
-                            }
-                            break;
-                        case 2:
-                            {
-                                startx = random(len - 3);
-                                ret = [{
-                                    x: startx,
-                                    y: 0,
-                                    color: 6
-                                }, {
-                                    x: startx + 1,
-                                    y: 0,
-                                    color: 6
-                                }, {
-                                    x: startx + 2,
-                                    y: 0,
-                                    color: 6
-                                }, {
-                                    x: startx + 1,
-                                    y: -1,
-                                    color: 6
-                                }];
-                            }
-                            break;
-                        case 3:
-                            {
-                                startx = random(len - 2);
-                                ret = [{
-                                    x: startx,
-                                    y: 0,
-                                    color: 6
-                                }, {
-                                    x: startx,
-                                    y: -1,
-                                    color: 6
-                                }, {
-                                    x: startx + 1,
-                                    y: -1,
-                                    color: 6
-                                }, {
-                                    x: startx,
-                                    y: -2,
-                                    color: 6
-                                }];
-                            }
+                    ret = [{
+                        x: 1,
+                        y: 0,
+                        color: 6
+                    }, {
+                        x: 0,
+                        y: -1,
+                        color: 6
+                    }, {
+                        x: 1,
+                        y: -1,
+                        color: 6
+                    }, {
+                        x: 2,
+                        y: -1,
+                        color: 6
+                    }];
+                    ret = move(ret, random(len - 3));
+                    for (var i = 0; i < orientation; i++) {
+                        ret = rotate(ret);
                     }
                 }
                 break;
             case 7: //Z
                 {
-                    var startx;
-                    if (orientation % 2 == 0) {
-                        startx = random(len - 3);
-                        ret = [{
-                            x: startx + 1,
-                            y: 0,
-                            color: 7
-                        }, {
-                            x: startx + 2,
-                            y: 0,
-                            color: 7
-                        }, {
-                            x: startx + 1,
-                            y: -1,
-                            color: 7
-                        }, {
-                            x: startx,
-                            y: -1,
-                            color: 7
-                        }];
-                    } else {
-                        startx = random(len - 3);
-                        ret = [{
-                            x: startx,
-                            y: 0,
-                            color: 7
-                        }, {
-                            x: startx,
-                            y: -1,
-                            color: 7
-                        }, {
-                            x: startx + 1,
-                            y: -1,
-                            color: 7
-                        }, {
-                            x: startx + 1,
-                            y: -2,
-                            color: 7
-                        }];
+                    ret = [{
+                        x: 2,
+                        y: 0,
+                        color: 7
+                    }, {
+                        x: 1,
+                        y: 0,
+                        color: 7
+                    }, {
+                        x: 1,
+                        y: -1,
+                        color: 7
+                    }, {
+                        x: 0,
+                        y: -1,
+                        color: 7
+                    }];
+                    ret = move(ret, random(len - 3));
+                    for (var i = 0; i < orientation % 2; i++) {
+                        ret = rotate(ret);
                     }
                 }
         }
