@@ -172,47 +172,228 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function rotate(block) {
-        var ret = [];
 
+        var c = block.b;
         switch (block.color) {
             case 1:
                 {
-                    
+                    switch (block.dir) {
+                        case 0:
+                            {
+                                c[0].x++;
+                                c[0].y--;
+                                c[2].x--;
+                                c[2].y++;
+                                c[3].x += 2;
+                                c[3].y -= 2;
+                            }
+                            break;
+                        case 1:
+                            {
+                                c[0].x--;
+                                c[0].y++;
+                                c[2].x++;
+                                c[2].y--;
+                                c[3].x -= 2;
+                                c[3].y += 2;
+                            }
+                    }
+                    block.dir = ++block.dir % 2;
                 }
                 break;
             case 2:
                 {
+                    switch (block.dir) {
 
+                        case 0:
+                            {
+                                c[0].x++;
+                                c[0].y--;
+                                c[2].x++;
+                                c[2].y++;
+                                c[3].x += 2;
+                                c[3].y += 2;
+                            }
+                            break;
+                        case 1:
+                            {
+                                c[0].x++;
+                                c[0].y++;
+                                c[2].x--;
+                                c[2].y++;
+                                c[3].x -= 2;
+                                c[3].y += 2;
+                            }
+                            break;
+                        case 2:
+                            {
+                                c[0].x--;
+                                c[0].y++;
+                                c[2].x--;
+                                c[2].y--;
+                                c[3].x -= 2;
+                                c[3].y -= 2;
+                            }
+                            break;
+                        case 3:
+                            {
+                                c[0].x--;
+                                c[0].y--;
+                                c[2].x++;
+                                c[2].y--;
+                                c[3].x += 2;
+                                c[3].y -= 2;
+                            }
+                    }
+                    block.dir = ++block.dir % 4;
                 }
                 break;
             case 3:
                 {
+                    switch (block.dir) {
 
-                }
-                break;
-            case 4:
-                {
-                    ret = block;
+                        case 0:
+                            {
+                                c[0].x--;
+                                c[0].y++;
+                                c[2].x++;
+                                c[2].y++;
+                                c[3].x += 2;
+                                c[3].y += 2;
+                            }
+                            break;
+                        case 1:
+                            {
+                                c[0].x--;
+                                c[0].y--;
+                                c[2].x--;
+                                c[2].y++;
+                                c[3].x -= 2;
+                                c[3].y += 2;
+                            }
+                            break;
+                        case 2:
+                            {
+                                c[0].x++;
+                                c[0].y--;
+                                c[2].x--;
+                                c[2].y--;
+                                c[3].x -= 2;
+                                c[3].y -= 2;
+                            }
+                            break;
+                        case 3:
+                            {
+                                c[0].x++;
+                                c[0].y++;
+                                c[2].x++;
+                                c[2].y--;
+                                c[3].x += 2;
+                                c[3].y -= 2;
+                            }
+                    }
+                    block.dir = ++block.dir % 4;
                 }
                 break;
             case 5:
                 {
-
+                    switch (block.dir) {
+                        case 0:
+                            {
+                                c[0].x++;
+                                c[0].y--;
+                                c[2].x++;
+                                c[2].y++;
+                                c[3].x++;
+                                c[3].y += 2;
+                            }
+                            break;
+                        case 1:
+                            {
+                                c[0].x--;
+                                c[0].y++;
+                                c[2].x--;
+                                c[2].y--;
+                                c[3].x--;
+                                c[3].y -= 2;
+                            }
+                    }
+                    block.dir = ++block.dir % 2;
                 }
                 break;
             case 6:
                 {
-
+                    switch (block.dir) {
+                        case 0:
+                            {
+                                c[0].x--;
+                                c[0].y--;
+                                c[1].x++;
+                                c[1].y--;
+                                c[3].x--;
+                                c[3].y++;
+                            }
+                            break;
+                        case 1:
+                            {
+                                c[0].x++;
+                                c[0].y--;
+                                c[1].x++;
+                                c[1].y++;
+                                c[3].x--;
+                                c[3].y--;
+                            }
+                            break;
+                        case 2:
+                            {
+                                c[0].x++;
+                                c[0].y++;
+                                c[1].x--;
+                                c[1].y++;
+                                c[3].x++;
+                                c[3].y--;
+                            }
+                            break;
+                        case 3:
+                            {
+                                c[0].x--;
+                                c[0].y++;
+                                c[1].x--;
+                                c[1].y--;
+                                c[3].x++;
+                                c[3].y++;
+                            }
+                    }
+                    block.dir = ++block.dir % 4;
                 }
                 break;
             case 7:
                 {
-
+                    switch (block.dir) {
+                        case 0:
+                            {
+                                c[0].x--;
+                                c[0].y++;
+                                c[2].x++;
+                                c[2].y++;
+                                c[3].x += 2;
+                            }
+                            break;
+                        case 1:
+                            {
+                                c[0].x++;
+                                c[0].y--;
+                                c[2].x--;
+                                c[2].y--;
+                                c[2].x -= 2;
+                            }
+                    }
+                    block.dir = ++block.dir % 2;
                 }
                 break;
         }
 
-        return ret;
+        return block;
     }
 
     function move(block, dist) {
@@ -262,7 +443,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
                             y: 0
                         }],
                         dir: 0,
-                        color : 1
+                        color: 1
                     };
                     ret = move(ret, random(len - 4));
                     for (var i = 0; i < orientation % 2; i++) {
@@ -288,7 +469,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
                             y: -2
                         }],
                         dir: 0,
-                        color : 2
+                        color: 2
                     };
                     ret = move(ret, random(len - 2));
                     for (var i = 0; i < orientation; i++) {
@@ -313,7 +494,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
                             y: -2
                         }],
                         dir: 0,
-                        color : 3
+                        color: 3
                     };
                     ret = move(ret, random(len - 2));
                     for (var i = 0; i < orientation; i++) {
@@ -338,7 +519,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
                             y: -1
                         }],
                         dir: 0,
-                        color : 4
+                        color: 4
                     };
                     ret = move(ret, random(len - 2));
                 }
@@ -360,7 +541,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
                             y: -1
                         }],
                         dir: 0,
-                        color : 5
+                        color: 5
                     };
                     ret = move(ret, random(len - 3));
                     for (var i = 0; i < orientation % 2; i++) {
@@ -385,7 +566,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
                             y: -1
                         }],
                         dir: 0,
-                        color : 6
+                        color: 6
                     };
                     ret = move(ret, random(len - 3));
                     for (var i = 0; i < orientation; i++) {
@@ -410,7 +591,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
                             y: -1
                         }],
                         dir: 0,
-                        color : 7
+                        color: 7
                     };
                     ret = move(ret, random(len - 3));
                     for (var i = 0; i < orientation % 2; i++) {
