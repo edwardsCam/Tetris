@@ -115,15 +115,76 @@ GAME.initialize = (function initialize(graphics, images, input) {
         }
     }
 
+    function fall(block) {
+        var chunks = block.b;
+        if (canMoveDown(chunks)) {
+            removeBlockFromGrid(chunks);
+            moveDown(chunks);
+            placeBlockOnGrid(block);
+        }
+    }
+
+    function canMoveDown(block) {
+        var oldgrid = [];
+        for (var i = 0; i < 4; i++) {
+            var c = block[i];
+            oldgrid[oldgrid.length] = {
+                x : c.x,
+                y : c.y,
+                color : GAME.grid[c.x][c.y]
+            };
+            GAME.grid[c.x][c.y] = 0;
+        }
+
+        var cando = true;
+        for (var b = 0; b < 4; b++) {
+            var c = block[b];
+            var i = c.x;
+            var j = c.y;
+            if (j >= 0 && (j >= GAME.height - 1 || GAME.grid[i][j+1] != 0)) {
+                cando = false;
+                break;
+            }
+        }
+
+        for (var i = 0; i < 4; i++) {
+            var o = oldgrid[i];
+            GAME.grid[o.x][o.y] = o.color;
+        }
+        return cando;
+    }
+
+    function move(block, dist) {
+        if (dist > 0) {
+            for (var i = 0; i < 4; i++) {
+                block.b[i].x += dist;
+            }
+        }
+        return block;
+    }
+
+    function moveDown(block) {
+        for (var i = 0; i < 4; i++) {
+            block[i].y++;
+        }
+    }
+
     function makeNewBlock() {
         var block = generateRandomBlock();
         GAME.blocks[GAME.blocks.length] = block;
         placeBlockOnGrid(block);
     }
 
+    function removeBlockFromGrid(block) {
+        for (var i = 0; i < 4; i++) {
+            var bl = block[i];
+            GAME.grid[bl.x][bl.y] = 0;
+        }
+    }
+
     function placeBlockOnGrid(block) {
         for (var i = 0; i < 4; i++) {
-            var bl = block[i].b;
+            var bl = block.b[i];
             GAME.grid[bl.x][bl.y] = block.color;
         }
     }
@@ -135,44 +196,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
         return ret;
     }
 
-    function fall(block) {
-        var cando = true;
-        var xes = [];
-        for (var b = 0; b < 4; b++) {
-            var chunk = block[b];
-            var i = chunk.x;
-            var j = chunk.y;
-            var go = true;
-            for (var p = 0; p < xes.length; p++) {
-                if (xes[p] == i) {
-                    go = false;
-                    break;
-                }
-            }
-            if (go) {
-                xes[xes.length] = i;
-                if (!(j < GAME.height - 1 && (j >= 0 ? GAME.grid[i][j + 1] == 0 : true))) {
-                    cando = false;
-                }
-            }
-
-        }
-
-        if (cando) {
-            for (var bl = 0; bl < 4; bl++) {
-                var chunk = block[bl].b;
-                var i = chunk.x;
-                var j = chunk.y;
-                GAME.grid[i][j + 1] = block.color;
-                GAME.grid[i][j] = 0;
-                chunk.y++;
-            }
-
-        }
-    }
-
     function rotate(block) {
-
         var c = block.b;
         switch (block.color) {
             case 1:
@@ -204,7 +228,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
             case 2:
                 {
                     switch (block.dir) {
-
                         case 0:
                             {
                                 c[0].x++;
@@ -394,16 +417,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
         }
 
         return block;
-    }
-
-    function move(block, dist) {
-        var ret = block.b;
-        if (dist > 0) {
-            for (var i = 0; i < 4; i++) {
-                ret[i].x += dist;
-            }
-        }
-        return ret;
     }
 
     function generateRandomBlock() {
