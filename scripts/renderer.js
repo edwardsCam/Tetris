@@ -116,41 +116,28 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function fall(block) {
-        var chunks = block.b;
-        if (canMoveDown(chunks)) {
-            removeBlockFromGrid(chunks);
-            moveDown(chunks);
+        if (canMoveDown(block)) {
+            removeBlockFromGrid(block);
+            moveDown(block);
             placeBlockOnGrid(block);
         }
     }
 
     function canMoveDown(block) {
-        var oldgrid = [];
-        for (var i = 0; i < 4; i++) {
-            var c = block[i];
-            oldgrid[oldgrid.length] = {
-                x : c.x,
-                y : c.y,
-                color : GAME.grid[c.x][c.y]
-            };
-            GAME.grid[c.x][c.y] = 0;
-        }
+        removeBlockFromGrid(block);
 
         var cando = true;
-        for (var b = 0; b < 4; b++) {
-            var c = block[b];
+        for (var bl = 0; bl < 4; bl++) {
+            var c = block.b[bl];
             var i = c.x;
             var j = c.y;
-            if (j >= 0 && (j >= GAME.height - 1 || GAME.grid[i][j+1] != 0)) {
+            if (j >= 0 && (j >= GAME.height - 1 || GAME.grid[i][j + 1] != 0)) {
                 cando = false;
                 break;
             }
         }
 
-        for (var i = 0; i < 4; i++) {
-            var o = oldgrid[i];
-            GAME.grid[o.x][o.y] = o.color;
-        }
+        placeBlockOnGrid(block);
         return cando;
     }
 
@@ -165,7 +152,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
     function moveDown(block) {
         for (var i = 0; i < 4; i++) {
-            block[i].y++;
+            block.b[i].y++;
         }
     }
 
@@ -177,7 +164,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
     function removeBlockFromGrid(block) {
         for (var i = 0; i < 4; i++) {
-            var bl = block[i];
+            var bl = block.b[i];
             GAME.grid[bl.x][bl.y] = 0;
         }
     }
@@ -185,7 +172,11 @@ GAME.initialize = (function initialize(graphics, images, input) {
     function placeBlockOnGrid(block) {
         for (var i = 0; i < 4; i++) {
             var bl = block.b[i];
-            GAME.grid[bl.x][bl.y] = block.color;
+            var x = bl.x;
+            var y = bl.y;
+            if (x >= 0 && x < GAME.width && y >= 0 && y < GAME.height) {
+                GAME.grid[bl.x][bl.y] = block.color;
+            }
         }
     }
 
@@ -327,7 +318,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
                                 c[0].y--;
                                 c[2].x++;
                                 c[2].y++;
-                                c[3].x++;
                                 c[3].y += 2;
                             }
                             break;
@@ -337,7 +327,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
                                 c[0].y++;
                                 c[2].x--;
                                 c[2].y--;
-                                c[3].x--;
                                 c[3].y -= 2;
                             }
                     }
@@ -423,8 +412,8 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
         var ret = [];
 
-        var type = random(6) + 1;
-        var orientation = random(3);
+        var type = random(7);
+        var orientation = random(4) - 1;
 
         /*
         1 I
