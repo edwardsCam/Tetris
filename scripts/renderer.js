@@ -118,13 +118,13 @@ GAME.initialize = (function initialize(graphics, images, input) {
     function makeNewBlock() {
         var block = generateRandomBlock();
         GAME.blocks[GAME.blocks.length] = block;
-        placeBlockOnGrid(block);
+        placeBlockOnGrid(block.b);
     }
 
     function placeBlockOnGrid(block) {
         for (var i = 0; i < 4; i++) {
-            var b = block[i];
-            GAME.grid[b.x][b.y] = b.color;
+            var bl = block[i];
+            GAME.grid[bl.x][bl.y] = bl.color;
         }
     }
 
@@ -216,7 +216,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function move(block, dist) {
-        var ret = block;
+        var ret = block.b;
         if (dist > 0) {
             for (var i = 0; i < 4; i++) {
                 ret[i].x += dist;
@@ -247,24 +247,26 @@ GAME.initialize = (function initialize(graphics, images, input) {
         switch (type) {
             case 1: //I
                 {
-                    ret = [{
-                        x: 0,
-                        y: 0,
-                        color: 1
-                    }, {
-                        x: 1,
-                        y: 0,
-                        color: 1
-                    }, {
-                        x: 2,
-                        y: 0,
-                        color: 1
-                    }, {
-                        x: 3,
-                        y: 0,
-                        color: 1
-                    }];
-
+                    ret = {
+                        b: [{
+                            x: 0,
+                            y: 0,
+                            color: 1
+                        }, {
+                            x: 1,
+                            y: 0,
+                            color: 1
+                        }, {
+                            x: 2,
+                            y: 0,
+                            color: 1
+                        }, {
+                            x: 3,
+                            y: 0,
+                            color: 1
+                        }],
+                        dir: 0
+                    };
                     ret = move(ret, random(len - 4));
                     for (var i = 0; i < orientation % 2; i++) {
                         ret = rotate(ret);
@@ -276,23 +278,26 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
             case 2: //J
                 {
-                    ret = [{
-                        x: 0,
-                        y: 0,
-                        color: 2
-                    }, {
-                        x: 1,
-                        y: 0,
-                        color: 2
-                    }, {
-                        x: 1,
-                        y: -1,
-                        color: 2
-                    }, {
-                        x: 1,
-                        y: -2,
-                        color: 2
-                    }];
+                    ret = {
+                        b: [{
+                            x: 0,
+                            y: 0,
+                            color: 2
+                        }, {
+                            x: 1,
+                            y: 0,
+                            color: 2
+                        }, {
+                            x: 1,
+                            y: -1,
+                            color: 2
+                        }, {
+                            x: 1,
+                            y: -2,
+                            color: 2
+                        }],
+                        dir: 0
+                    };
                     ret = move(ret, random(len - 2));
                     for (var i = 0; i < orientation; i++) {
                         ret = rotate(ret);
@@ -301,23 +306,26 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 break;
             case 3: //L
                 {
-                    ret = [{
-                        x: 1,
-                        y: 0,
-                        color: 3
-                    }, {
-                        x: 0,
-                        y: 0,
-                        color: 3
-                    }, {
-                        x: 0,
-                        y: -1,
-                        color: 3
-                    }, {
-                        x: 0,
-                        y: -2,
-                        color: 3
-                    }];
+                    ret = {
+                        b: [{
+                            x: 1,
+                            y: 0,
+                            color: 3
+                        }, {
+                            x: 0,
+                            y: 0,
+                            color: 3
+                        }, {
+                            x: 0,
+                            y: -1,
+                            color: 3
+                        }, {
+                            x: 0,
+                            y: -2,
+                            color: 3
+                        }],
+                        dir: 0
+                    };
                     ret = move(ret, random(len - 2));
                     for (var i = 0; i < orientation; i++) {
                         ret = rotate(ret);
@@ -326,45 +334,51 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 break;
             case 4: //O
                 {
-                    ret = [{
-                        x: 0,
-                        y: 0,
-                        color: 4
-                    }, {
-                        x: 1,
-                        y: 0,
-                        color: 4
-                    }, {
-                        x: 1,
-                        y: -1,
-                        color: 4
-                    }, {
-                        x: 0,
-                        y: -1,
-                        color: 4
-                    }];
+                    ret = {
+                        b: [{
+                            x: 0,
+                            y: 0,
+                            color: 4
+                        }, {
+                            x: 1,
+                            y: 0,
+                            color: 4
+                        }, {
+                            x: 1,
+                            y: -1,
+                            color: 4
+                        }, {
+                            x: 0,
+                            y: -1,
+                            color: 4
+                        }],
+                        dir: 0
+                    };
                     ret = move(ret, random(len - 2));
                 }
                 break;
             case 5: //S
                 {
-                    ret = [{
-                        x: 0,
-                        y: 0,
-                        color: 5
-                    }, {
-                        x: 1,
-                        y: 0,
-                        color: 5
-                    }, {
-                        x: 1,
-                        y: -1,
-                        color: 5
-                    }, {
-                        x: 2,
-                        y: -1,
-                        color: 5
-                    }];
+                    ret = {
+                        b: [{
+                            x: 0,
+                            y: 0,
+                            color: 5
+                        }, {
+                            x: 1,
+                            y: 0,
+                            color: 5
+                        }, {
+                            x: 1,
+                            y: -1,
+                            color: 5
+                        }, {
+                            x: 2,
+                            y: -1,
+                            color: 5
+                        }],
+                        dir: 0
+                    };
                     ret = move(ret, random(len - 3));
                     for (var i = 0; i < orientation % 2; i++) {
                         ret = rotate(ret);
@@ -373,23 +387,26 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 break;
             case 6: //T
                 {
-                    ret = [{
-                        x: 1,
-                        y: 0,
-                        color: 6
-                    }, {
-                        x: 0,
-                        y: -1,
-                        color: 6
-                    }, {
-                        x: 1,
-                        y: -1,
-                        color: 6
-                    }, {
-                        x: 2,
-                        y: -1,
-                        color: 6
-                    }];
+                    ret = {
+                        b: [{
+                            x: 1,
+                            y: 0,
+                            color: 6
+                        }, {
+                            x: 0,
+                            y: -1,
+                            color: 6
+                        }, {
+                            x: 1,
+                            y: -1,
+                            color: 6
+                        }, {
+                            x: 2,
+                            y: -1,
+                            color: 6
+                        }],
+                        dir: 0
+                    };
                     ret = move(ret, random(len - 3));
                     for (var i = 0; i < orientation; i++) {
                         ret = rotate(ret);
@@ -398,23 +415,26 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 break;
             case 7: //Z
                 {
-                    ret = [{
-                        x: 2,
-                        y: 0,
-                        color: 7
-                    }, {
-                        x: 1,
-                        y: 0,
-                        color: 7
-                    }, {
-                        x: 1,
-                        y: -1,
-                        color: 7
-                    }, {
-                        x: 0,
-                        y: -1,
-                        color: 7
-                    }];
+                    ret = {
+                        b: [{
+                            x: 2,
+                            y: 0,
+                            color: 7
+                        }, {
+                            x: 1,
+                            y: 0,
+                            color: 7
+                        }, {
+                            x: 1,
+                            y: -1,
+                            color: 7
+                        }, {
+                            x: 0,
+                            y: -1,
+                            color: 7
+                        }],
+                        dir: 0
+                    };
                     ret = move(ret, random(len - 3));
                     for (var i = 0; i < orientation % 2; i++) {
                         ret = rotate(ret);
