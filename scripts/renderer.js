@@ -147,7 +147,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 block.b[i].x += dist;
             }
         }
-        return block;
     }
 
     function moveDown(block) {
@@ -404,8 +403,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 }
                 break;
         }
-
-        return block;
     }
 
     function generateRandomBlock() {
@@ -447,9 +444,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         dir: 0,
                         color: 1
                     };
-                    ret = move(ret, random(len - 4));
+                    move(ret, random(len - 4));
                     for (var i = 0; i < orientation % 2; i++) {
-                        ret = rotate(ret);
+                        rotate(ret);
                     }
 
                 }
@@ -473,9 +470,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         dir: 0,
                         color: 2
                     };
-                    ret = move(ret, random(len - 2));
+                    move(ret, random(len - 2));
                     for (var i = 0; i < orientation; i++) {
-                        ret = rotate(ret);
+                        rotate(ret);
                     }
                 }
                 break;
@@ -498,9 +495,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         dir: 0,
                         color: 3
                     };
-                    ret = move(ret, random(len - 2));
+                    move(ret, random(len - 2));
                     for (var i = 0; i < orientation; i++) {
-                        ret = rotate(ret);
+                        rotate(ret);
                     }
                 }
                 break;
@@ -523,7 +520,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         dir: 0,
                         color: 4
                     };
-                    ret = move(ret, random(len - 2));
+                    move(ret, random(len - 2));
                 }
                 break;
             case 5: //S
@@ -545,9 +542,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         dir: 0,
                         color: 5
                     };
-                    ret = move(ret, random(len - 3));
+                    move(ret, random(len - 3));
                     for (var i = 0; i < orientation % 2; i++) {
-                        ret = rotate(ret);
+                        rotate(ret);
                     }
                 }
                 break;
@@ -570,9 +567,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         dir: 0,
                         color: 6
                     };
-                    ret = move(ret, random(len - 3));
+                    move(ret, random(len - 3));
                     for (var i = 0; i < orientation; i++) {
-                        ret = rotate(ret);
+                        rotate(ret);
                     }
                 }
                 break;
@@ -595,9 +592,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         dir: 0,
                         color: 7
                     };
-                    ret = move(ret, random(len - 3));
+                    move(ret, random(len - 3));
                     for (var i = 0; i < orientation % 2; i++) {
-                        ret = rotate(ret);
+                        rotate(ret);
                     }
                 }
         }
