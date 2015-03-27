@@ -142,10 +142,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             makeNewBlock();
         }
 
-        checkForClears();
-
         var k = GAME.currentKey;
-
         if (k != 0) {
             var active = GAME.blocks[GAME.activeBlock];
             removeBlockFromGrid(active);
@@ -172,6 +169,8 @@ GAME.initialize = (function initialize(graphics, images, input) {
             GAME.currentKey = 0;
             GAME.changed_flag = false;
         }
+
+        checkForClears();
     }
 
     function Render() {
@@ -231,8 +230,25 @@ GAME.initialize = (function initialize(graphics, images, input) {
         }
     }
 
-    function clearRow(i) {
+    function clearRow(r) {
+        for (var i = 0; i < GAME.width; i++) {
+            GAME.ground[i][r] = 0;
+            GAME.grid[i][r] = 0;
+        }
+        dropGround();
+    }
 
+    function dropGround() {
+        for (var i = 0; i < GAME.width; i++) {
+            for (var j = GAME.height - 2; j >= 0; j--) {
+                if (GAME.ground[i][j] == 1) {
+                    GAME.grid[i][j + 1] = GAME.grid[i][j];
+                    GAME.grid[i][j] = 0;
+                    GAME.ground[i][j + 1] = 1;
+                    GAME.ground[i][j] = 0;
+                }
+            }
+        }
     }
 
     function fall(block) {
@@ -292,11 +308,11 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function isInBounds(x, y) {
-        return x >= 0 && x < GAME.width && y >= 0 && y < GAME.height;
+        return x >= 0 && x < GAME.width && y < GAME.height;
     }
 
     function isOnGround(x, y) {
-        return y >= 0 && (y >= GAME.height - 1 || (isInBounds(x, y) ? GAME.grid[x][y + 1] != 0 : true));
+        return y >= 0 && (y >= GAME.height - 1 || (isInBounds(x, y - 1) ? GAME.grid[x][y + 1] != 0 : true));
     }
 
     function moveDown(block, dist) {
