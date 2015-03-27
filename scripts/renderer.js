@@ -69,6 +69,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
     (function setVariables() {
         GAME.blocks = [];
+        GAME.ground = [];
         GAME.grid = [];
         for (var i = 0; i < GAME.width; i++) {
             GAME.grid[i] = [];
@@ -105,7 +106,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
         if (GAME.falltimer > 1000) {
             GAME.falltimer -= 1000;
             for (var i = 0; i < GAME.blocks.length; i++) {
-                fall(GAME.blocks[i]);
+                if (!fall(GAME.blocks[i])) {
+                    addToGround(i--);
+                }
             }
         }
 
@@ -120,12 +123,21 @@ GAME.initialize = (function initialize(graphics, images, input) {
             removeBlockFromGrid(block);
             moveDown(block);
             placeBlockOnGrid(block);
+            return true;
         }
+        return false;
+    }
+
+    function addToGround(b) {
+        var block = GAME.blocks[b];
+        for (var i = 0; i < 4; i++) {
+            GAME.ground[GAME.ground.length] = block[i];
+        }
+        GAME.blocks.splice(b, 1);
     }
 
     function canMoveDown(block) {
         removeBlockFromGrid(block);
-
         var cando = true;
         for (var bl = 0; bl < 4; bl++) {
             var c = block.b[bl];
@@ -136,7 +148,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 break;
             }
         }
-
         placeBlockOnGrid(block);
         return cando;
     }
@@ -202,8 +213,8 @@ GAME.initialize = (function initialize(graphics, images, input) {
                                 c[0].y--;
                                 c[2].x--;
                                 c[2].y++;
-                                c[3].x += 2;
-                                c[3].y -= 2;
+                                c[3].x -= 2;
+                                c[3].y += 2;
                             }
                             break;
                         case 1:
@@ -212,8 +223,8 @@ GAME.initialize = (function initialize(graphics, images, input) {
                                 c[0].y++;
                                 c[2].x++;
                                 c[2].y--;
-                                c[3].x -= 2;
-                                c[3].y += 2;
+                                c[3].x += 2;
+                                c[3].y -= 2;
                             }
                     }
                     block.dir = ++block.dir % 2;
