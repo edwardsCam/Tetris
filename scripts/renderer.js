@@ -156,7 +156,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             } else if (k == 81) { // q
                 console.log("rotate counterclock");
             } else if (k == 69) { // e
-                console.log("rotate clockwise");
+                rotate(active);
             }
             placeBlockOnGrid(active);
             GAME.changed_flag = true;
