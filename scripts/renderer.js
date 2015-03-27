@@ -140,6 +140,8 @@ GAME.initialize = (function initialize(graphics, images, input) {
             makeNewBlock();
         }
 
+        checkForClears();
+
         var k = GAME.currentKey;
 
         if (k != 0) {
@@ -206,6 +208,29 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 GAME.context.fillRect(i * GAME.blocksize, j * GAME.blocksize, GAME.blocksize, GAME.blocksize);
             }
         }
+    }
+
+    function checkForClears() {
+        for (var i = GAME.height - 1; i >= 0; i--) {
+            var hasBlock = false;
+            var blockCount = 0;
+            for (var j = 0; j < GAME.width; j++) {
+                if (GAME.grid[i][j] != 0) {
+                    hasBlock = true;
+                    blockCount++;
+                }
+            }
+            if (!hasBlock) {
+                break;
+            }
+            if (blockCount == GAME.width) {
+                clearRow(i);
+            }
+        }
+    }
+
+    function clearRow(i) {
+        
     }
 
     function fall(block) {
