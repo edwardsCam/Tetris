@@ -150,9 +150,11 @@ GAME.initialize = (function initialize(graphics, images, input) {
             } else if (k == 68) { // d
                 move(active, 1);
             } else if (k == 83) { // s
-                console.log("soft drop");
+                moveDown(active, 1);
+                GAME.falltimer = 0;
             } else if (k == 87) { // w
-                console.log("hard drop");
+                hardDrop(active);
+                GAME.newblocktimer = 9000;
             } else if (k == 81) { // q
                 rotateCounterClockwise(active);
             } else if (k == 69) { // e
@@ -214,6 +216,14 @@ GAME.initialize = (function initialize(graphics, images, input) {
             return true;
         }
         return false;
+    }
+
+    function hardDrop(block) {
+        while (canMoveDown(block)) {
+            removeBlockFromGrid(block);
+            moveDown(block, 1);
+            placeBlockOnGrid(block);
+        }
     }
 
     function canMoveDown(block) {
