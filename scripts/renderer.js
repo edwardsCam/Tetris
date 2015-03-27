@@ -154,9 +154,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
             } else if (k == 87) { // w
                 console.log("hard drop");
             } else if (k == 81) { // q
-                console.log("rotate counterclock");
+                rotateCounterClockwise(active);
             } else if (k == 69) { // e
-                rotate(active);
+                rotateClockwise(active);
             }
             placeBlockOnGrid(active);
             GAME.changed_flag = true;
@@ -209,7 +209,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
     function fall(block) {
         if (canMoveDown(block)) {
             removeBlockFromGrid(block);
-            moveDown(block);
+            moveDown(block, 1);
             placeBlockOnGrid(block);
             return true;
         }
@@ -262,25 +262,25 @@ GAME.initialize = (function initialize(graphics, images, input) {
         return y >= 0 && (y >= GAME.height - 1 || (isInBounds(x, y) ? GAME.grid[x][y + 1] != 0 : true));
     }
 
-    function moveDown(block) {
-        for (var i = 0; i < 4; i++) {
-            block.chunks[i].y++;
+    function moveDown(block, dist) {
+        while (dist-- > 0) {
+            for (var i = 0; i < 4; i++) {
+                block.chunks[i].y++;
+            }
         }
     }
 
     function move(block, dist) {
-        if (dist != 0) {
-            while (dist != 0) {
-                if (canMoveHoriz(block, dist)) {
-                    for (var i = 0; i < 4; i++) {
-                        block.chunks[i].x += dist;
-                    }
+        while (dist != 0) {
+            if (canMoveHoriz(block, dist)) {
+                for (var i = 0; i < 4; i++) {
+                    block.chunks[i].x += dist;
                 }
-                if (dist < 0)
-                    dist ++;
-                else
-                    dist--;
             }
+            if (dist < 0)
+                dist++;
+            else
+                dist--;
         }
     }
 
@@ -295,7 +295,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             }
         } else {
             for (var i = 0; i < 4; i++) {
-                if (block.chunks[i].x == GAME.width-1) {
+                if (block.chunks[i].x == GAME.width - 1) {
                     return false;
                 }
             }
@@ -377,7 +377,13 @@ GAME.initialize = (function initialize(graphics, images, input) {
         }
     }
 
-    function rotate(block) {
+    function rotateCounterClockwise(block) {
+        rotateClockwise(block);
+        rotateClockwise(block);
+        rotateClockwise(block);
+    }
+
+    function rotateClockwise(block) {
         var c = block.chunks;
         switch (block.color) {
             case 1:
@@ -635,9 +641,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         dir: 0,
                         color: 1
                     };
-                    move(ret, random(len - 4));
+                    move(ret, random(len - 3) - 1);
                     for (var i = 0; i < orientation % 2; i++) {
-                        rotate(ret);
+                        rotateClockwise(ret);
                     }
 
                 }
@@ -661,9 +667,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         dir: 0,
                         color: 2
                     };
-                    move(ret, random(len - 2));
+                    move(ret, random(len - 1) - 1);
                     for (var i = 0; i < orientation; i++) {
-                        rotate(ret);
+                        rotateClockwise(ret);
                     }
                 }
                 break;
@@ -686,9 +692,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         dir: 0,
                         color: 3
                     };
-                    move(ret, random(len - 2));
+                    move(ret, random(len - 1) - 1);
                     for (var i = 0; i < orientation; i++) {
-                        rotate(ret);
+                        rotateClockwise(ret);
                     }
                 }
                 break;
@@ -711,7 +717,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         dir: 0,
                         color: 4
                     };
-                    move(ret, random(len - 2));
+                    move(ret, random(len - 1) - 1);
                 }
                 break;
             case 5: //S
@@ -733,9 +739,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         dir: 0,
                         color: 5
                     };
-                    move(ret, random(len - 3));
+                    move(ret, random(len - 2) - 1);
                     for (var i = 0; i < orientation % 2; i++) {
-                        rotate(ret);
+                        rotateClockwise(ret);
                     }
                 }
                 break;
@@ -758,9 +764,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         dir: 0,
                         color: 6
                     };
-                    move(ret, random(len - 3));
+                    move(ret, random(len - 2) - 1);
                     for (var i = 0; i < orientation; i++) {
-                        rotate(ret);
+                        rotateClockwise(ret);
                     }
                 }
                 break;
@@ -783,9 +789,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
                         dir: 0,
                         color: 7
                     };
-                    move(ret, random(len - 3));
+                    move(ret, random(len - 2) - 1);
                     for (var i = 0; i < orientation % 2; i++) {
-                        rotate(ret);
+                        rotateClockwise(ret);
                     }
                 }
         }
