@@ -77,8 +77,10 @@ GAME.initialize = (function initialize(graphics, images, input) {
         GAME.activeBlock = 0;
         for (var i = 0; i < GAME.width; i++) {
             GAME.grid[i] = [];
+            GAME.ground[i] = [];
             for (var j = 0; j < GAME.height; j++) {
                 GAME.grid[i][j] = 0;
+                GAME.ground[i][j] = 0;
             }
         }
     }());
@@ -215,7 +217,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             var hasBlock = false;
             var blockCount = 0;
             for (var j = 0; j < GAME.width; j++) {
-                if (GAME.grid[i][j] != 0) {
+                if (GAME.grid[j][i] != 0) {
                     hasBlock = true;
                     blockCount++;
                 }
@@ -230,7 +232,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function clearRow(i) {
-        
+
     }
 
     function fall(block) {
@@ -340,9 +342,10 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function addToGround(b) {
-        var block = GAME.blocks[b];
+        var c = GAME.blocks[b];
         for (var i = 0; i < 4; i++) {
-            GAME.ground[GAME.ground.length] = block[i];
+            var chunk = c.chunks[i];
+            GAME.ground[chunk.x][chunk.y] = 1;
         }
         GAME.blocks.splice(b, 1);
     }
