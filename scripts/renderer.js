@@ -144,10 +144,11 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
         if (k != 0) {
             var active = GAME.blocks[GAME.activeBlock];
+            removeBlockFromGrid(active);
             if (k == 65) { // a
                 move(active, -1);
             } else if (k == 68) { // d
-                console.log("right");
+                move(active, 1);
             } else if (k == 83) { // s
                 console.log("soft drop");
             } else if (k == 87) { // w
@@ -268,11 +269,17 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function move(block, dist) {
-        while (dist-- > 0) {
-            if (canMoveHoriz(block, dist)) {
-                for (var i = 0; i < 4; i++) {
-                    block.chunks[i].x += dist;
+        if (dist != 0) {
+            while (dist != 0) {
+                if (canMoveHoriz(block, dist)) {
+                    for (var i = 0; i < 4; i++) {
+                        block.chunks[i].x += dist;
+                    }
                 }
+                if (dist < 0)
+                    dist ++;
+                else
+                    dist--;
             }
         }
     }
