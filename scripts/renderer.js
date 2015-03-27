@@ -79,6 +79,13 @@ GAME.initialize = (function initialize(graphics, images, input) {
         }
     }());
 
+    function random(top) {
+        var ret = Math.floor(Math.random() * top) + 1;
+        if (ret < 0)
+            return 0;
+        return ret;
+    }
+
     //------------------------------------------------------------------
     //
     // This is the Game Loop function!
@@ -118,6 +125,44 @@ GAME.initialize = (function initialize(graphics, images, input) {
         }
     }
 
+    function Render() {
+        for (var i = 0; i < GAME.width; i++) {
+            for (var j = 0; j < GAME.height; j++) {
+
+                var color;
+
+                switch (GAME.grid[i][j]) {
+                    case 0:
+                        color = "rgb(50,50,50)";
+                        break;
+                    case 1:
+                        color = "rgb(255,0,0)";
+                        break;
+                    case 2:
+                        color = "rgb(255,0,255)";
+                        break;
+                    case 3:
+                        color = "rgb(255,255,0)";
+                        break;
+                    case 4:
+                        color = "rgb(0,255,255)";
+                        break;
+                    case 5:
+                        color = "rgb(0,0,255)";
+                        break;
+                    case 6:
+                        color = "rgb(200,200,200)";
+                        break;
+                    case 7:
+                        color = "rgb(0,255,0)";
+                        break;
+                }
+                GAME.context.fillStyle = color;
+                GAME.context.fillRect(i * GAME.blocksize, j * GAME.blocksize, GAME.blocksize, GAME.blocksize);
+            }
+        }
+    }
+
     function fall(block) {
         if (canMoveDown(block)) {
             removeBlockFromGrid(block);
@@ -126,14 +171,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
             return true;
         }
         return false;
-    }
-
-    function addToGround(b) {
-        var block = GAME.blocks[b];
-        for (var i = 0; i < 4; i++) {
-            GAME.ground[GAME.ground.length] = block[i];
-        }
-        GAME.blocks.splice(b, 1);
     }
 
     function canMoveDown(block) {
@@ -150,26 +187,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
         }
         placeBlockOnGrid(block);
         return cando;
-    }
-
-    function move(block, dist) {
-        if (dist > 0) {
-            for (var i = 0; i < 4; i++) {
-                block.b[i].x += dist;
-            }
-        }
-    }
-
-    function moveDown(block) {
-        for (var i = 0; i < 4; i++) {
-            block.b[i].y++;
-        }
-    }
-
-    function makeNewBlock() {
-        var block = generateRandomBlock();
-        GAME.blocks[GAME.blocks.length] = block;
-        placeBlockOnGrid(block);
     }
 
     function removeBlockFromGrid(block) {
@@ -194,11 +211,32 @@ GAME.initialize = (function initialize(graphics, images, input) {
         }
     }
 
-    function random(top) {
-        var ret = Math.floor(Math.random() * top) + 1;
-        if (ret < 0)
-            return 0;
-        return ret;
+    function moveDown(block) {
+        for (var i = 0; i < 4; i++) {
+            block.b[i].y++;
+        }
+    }
+
+    function move(block, dist) {
+        if (dist > 0) {
+            for (var i = 0; i < 4; i++) {
+                block.b[i].x += dist;
+            }
+        }
+    }
+
+    function addToGround(b) {
+        var block = GAME.blocks[b];
+        for (var i = 0; i < 4; i++) {
+            GAME.ground[GAME.ground.length] = block[i];
+        }
+        GAME.blocks.splice(b, 1);
+    }
+
+    function makeNewBlock() {
+        var block = generateRandomBlock();
+        GAME.blocks[GAME.blocks.length] = block;
+        placeBlockOnGrid(block);
     }
 
     function rotate(block) {
@@ -615,44 +653,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
         }
 
         return ret;
-    }
-
-    function Render() {
-        for (var i = 0; i < GAME.width; i++) {
-            for (var j = 0; j < GAME.height; j++) {
-
-                var color;
-
-                switch (GAME.grid[i][j]) {
-                    case 0:
-                        color = "rgb(50,50,50)";
-                        break;
-                    case 1:
-                        color = "rgb(255,0,0)";
-                        break;
-                    case 2:
-                        color = "rgb(255,0,255)";
-                        break;
-                    case 3:
-                        color = "rgb(255,255,0)";
-                        break;
-                    case 4:
-                        color = "rgb(0,255,255)";
-                        break;
-                    case 5:
-                        color = "rgb(0,0,255)";
-                        break;
-                    case 6:
-                        color = "rgb(200,200,200)";
-                        break;
-                    case 7:
-                        color = "rgb(0,255,0)";
-                        break;
-                }
-                GAME.context.fillStyle = color;
-                GAME.context.fillRect(i * GAME.blocksize, j * GAME.blocksize, GAME.blocksize, GAME.blocksize);
-            }
-        }
     }
 
     return function() {
