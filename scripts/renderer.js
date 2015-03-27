@@ -68,6 +68,9 @@ GAME.initialize = (function initialize(graphics, images, input) {
     GAME.newblocktimer = 5000;
 
     (function setVariables() {
+        GAME.currentKey = 0;
+        GAME.keyIsPressed = false;
+        GAME.changed_flag = false;
         GAME.blocks = [];
         GAME.ground = [];
         GAME.grid = [];
@@ -106,7 +109,19 @@ GAME.initialize = (function initialize(graphics, images, input) {
     };
 
     function GatherInput() {
+        document.onkeydown = checkKey;
+        document.onkeyup = releaseKey;
 
+        function checkKey(e) {
+            if (!GAME.keyIsPressed) {
+                GAME.keyIsPressed = true;
+                GAME.currentKey = e.keyCode;
+            }
+        }
+
+        function releaseKey() {
+            GAME.keyIsPressed = false;
+        }
     }
 
     function UpdateGameLogic(delta) {
@@ -122,6 +137,30 @@ GAME.initialize = (function initialize(graphics, images, input) {
         if (GAME.newblocktimer > 5000) {
             GAME.newblocktimer -= 5000;
             makeNewBlock();
+        }
+
+        var k = GAME.currentKey;
+
+        if (k != 0) {
+            if (k == 65) { // a
+                console.log("left")
+            } else if (k == 68) { // d
+                console.log("right");
+            } else if (k == 83) { // s
+                console.log("soft drop");
+            } else if (k == 87) { // w
+                console.log("hard drop");
+            } else if (k == 81) { // q
+                console.log("rotate counterclock");
+            } else if (k == 69) { // e
+                console.log("rotate clockwise");
+            }
+            GAME.changed_flag = true;
+        }
+
+        if (GAME.changed_flag) {
+            GAME.currentKey = 0;
+            GAME.changed_flag = false;
         }
     }
 
@@ -216,7 +255,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function isOnGround(x, y) {
-        return y >= 0 && (y >= GAME.height - 1 || GAME.grid[x][y + 1] != 0);
+        return y >= 0 && (y >= GAME.height - 1 || (y < GAME.height - 1 ? GAME.grid[x][y + 1] != 0 : true));
     }
 
     function moveDown(block) {
