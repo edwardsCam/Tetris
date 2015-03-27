@@ -65,7 +65,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
     GAME.currtime = performance.now();
     GAME.falltimer = 0;
-    GAME.newblocktimer = 5000;
+    GAME.newblocktimer = 10000;
 
     (function setVariables() {
         GAME.currentKey = 0;
@@ -74,6 +74,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
         GAME.blocks = [];
         GAME.ground = [];
         GAME.grid = [];
+        GAME.activeBlock = 0;
         for (var i = 0; i < GAME.width; i++) {
             GAME.grid[i] = [];
             for (var j = 0; j < GAME.height; j++) {
@@ -125,8 +126,8 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function UpdateGameLogic(delta) {
-        if (GAME.falltimer > 1000) {
-            GAME.falltimer -= 1000;
+        if (GAME.falltimer > 500) {
+            GAME.falltimer -= 500;
             for (var i = 0; i < GAME.blocks.length; i++) {
                 if (!fall(GAME.blocks[i])) {
                     addToGround(i--);
@@ -134,16 +135,17 @@ GAME.initialize = (function initialize(graphics, images, input) {
             }
         }
 
-        if (GAME.newblocktimer > 5000) {
-            GAME.newblocktimer -= 5000;
+        if (GAME.newblocktimer > 10000) {
+            GAME.newblocktimer -= 10000;
             makeNewBlock();
         }
 
         var k = GAME.currentKey;
 
         if (k != 0) {
+            var active = GAME.blocks[GAME.activeBlock];
             if (k == 65) { // a
-                console.log("left")
+                move(active, -1);
             } else if (k == 68) { // d
                 console.log("right");
             } else if (k == 83) { // s
@@ -155,6 +157,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             } else if (k == 69) { // e
                 console.log("rotate clockwise");
             }
+            placeBlockOnGrid(active);
             GAME.changed_flag = true;
         }
 
@@ -255,7 +258,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function isOnGround(x, y) {
-        return y >= 0 && (y >= GAME.height - 1 || (y < GAME.height - 1 ? GAME.grid[x][y + 1] != 0 : true));
+        return y >= 0 && (y >= GAME.height - 1 || (isInBounds(x, y) ? GAME.grid[x][y + 1] != 0 : true));
     }
 
     function moveDown(block) {
@@ -265,11 +268,33 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function move(block, dist) {
-        if (dist > 0) {
-            for (var i = 0; i < 4; i++) {
-                block.chunks[i].x += dist;
+        while (dist-- > 0) {
+            if (canMoveHoriz(block, dist)) {
+                for (var i = 0; i < 4; i++) {
+                    block.chunks[i].x += dist;
+                }
             }
         }
+    }
+
+    function canMoveHoriz(block, dist) {
+        if (dist == 0)
+            return true;
+        if (dist < 0) {
+            for (var i = 0; i < 4; i++) {
+                if (block.chunks[i].x == 0) {
+                    return false;
+                }
+            }
+        } else {
+            for (var i = 0; i < 4; i++) {
+                if (block.chunks[i].x == GAME.width-1) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     function addToGround(b) {
@@ -282,8 +307,67 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
     function makeNewBlock() {
         var block = generateRandomBlock();
-        GAME.blocks[GAME.blocks.length] = block;
+        moveIntoBoundsHoriz(block);
+        moveIntoBoundsVert(block);
+        var i = GAME.blocks.length;
+        GAME.activeBlock = i;
+        GAME.blocks[i] = block;
         placeBlockOnGrid(block);
+    }
+
+    function moveIntoBoundsHoriz(block) {
+        var c = block.chunks;
+        var min = GAME.width;
+        var max = -5;
+
+        for (var i = 0; i < 4; i++) {
+            if (c[i].x < min) {
+                min = c[i].x;
+            }
+            if (c[i].x > max) {
+                max = c[i].x;
+            }
+        }
+        if (min < 0) {
+            while (min++ < 0) {
+                for (var i = 0; i < 4; i++) {
+                    c[i].x++;
+                }
+            }
+        } else if (max > GAME.width - 1) {
+            while (max-- > GAME.width - 1) {
+                for (var i = 0; i < 4; i++) {
+                    c[i].x--;
+                }
+            }
+        }
+    }
+
+    function moveIntoBoundsVert(block) {
+        var c = block.chunks;
+        var min = 1;
+        var max = -5;
+        for (var i = 0; i < 4; i++) {
+            if (c[i].y < min) {
+                min = c[i].y;
+            }
+            if (c[i].y > max) {
+                max = c[i].y;
+            }
+        }
+        if (max > 0) {
+            while (max-- > 0) {
+                for (var i = 0; i < 4; i++) {
+                    c[i].y--;
+                }
+            }
+        } else if (min < -3) {
+            while (min++ < -3) {
+                for (var i = 0; i < 4; i++) {
+                    c[i].y++;
+                }
+            }
+        }
     }
 
     function rotate(block) {
