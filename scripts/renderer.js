@@ -175,52 +175,60 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
     function canMoveDown(block) {
         removeBlockFromGrid(block);
-        var cando = true;
-        for (var bl = 0; bl < 4; bl++) {
-            var c = block.b[bl];
-            var i = c.x;
-            var j = c.y;
-            if (j >= 0 && (j >= GAME.height - 1 || GAME.grid[i][j + 1] != 0)) {
-                cando = false;
+        var ret = true;
+        for (var i = 0; i < 4; i++) {
+            var b = block.chunks[i];
+            var x = b.x;
+            var y = b.y;
+            if (isOnGround(x, y)) {
+                ret = false;
                 break;
             }
         }
         placeBlockOnGrid(block);
-        return cando;
+        return ret;
     }
 
     function removeBlockFromGrid(block) {
         for (var i = 0; i < 4; i++) {
-            var bl = block.b[i];
-            var x = bl.x;
-            var y = bl.y;
-            if (x >= 0 && x < GAME.width && y >= 0 && y < GAME.height) {
-                GAME.grid[bl.x][bl.y] = 0;
+            var b = block.chunks[i];
+            var x = b.x;
+            var y = b.y;
+            if (isInBounds(x, y)) {
+                GAME.grid[x][y] = 0;
             }
         }
     }
 
     function placeBlockOnGrid(block) {
         for (var i = 0; i < 4; i++) {
-            var bl = block.b[i];
-            var x = bl.x;
-            var y = bl.y;
-            if (x >= 0 && x < GAME.width && y >= 0 && y < GAME.height) {
-                GAME.grid[bl.x][bl.y] = block.color;
+            var b = block.chunks[i];
+            var x = b.x;
+            var y = b.y;
+            if (isInBounds(x, y)) {
+                GAME.grid[x][y] = block.color;
             }
         }
     }
 
+    function isInBounds(x, y) {
+        return x >= 0 && x < GAME.width && y >= 0 && y < GAME.height;
+    }
+
+    function isOnGround(x, y) {
+        return y >= 0 && (y >= GAME.height - 1 || GAME.grid[x][y + 1] != 0);
+    }
+
     function moveDown(block) {
         for (var i = 0; i < 4; i++) {
-            block.b[i].y++;
+            block.chunks[i].y++;
         }
     }
 
     function move(block, dist) {
         if (dist > 0) {
             for (var i = 0; i < 4; i++) {
-                block.b[i].x += dist;
+                block.chunks[i].x += dist;
             }
         }
     }
@@ -240,7 +248,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function rotate(block) {
-        var c = block.b;
+        var c = block.chunks;
         switch (block.color) {
             case 1:
                 {
@@ -449,7 +457,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
                                 c[0].y--;
                                 c[2].x--;
                                 c[2].y--;
-                                c[2].x -= 2;
+                                c[3].x -= 2;
                             }
                     }
                     block.dir = ++block.dir % 2;
@@ -481,7 +489,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             case 1: //I
                 {
                     ret = {
-                        b: [{
+                        chunks: [{
                             x: 0,
                             y: 0
                         }, {
@@ -507,7 +515,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             case 2: //J
                 {
                     ret = {
-                        b: [{
+                        chunks: [{
                             x: 0,
                             y: 0
                         }, {
@@ -532,7 +540,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             case 3: //L
                 {
                     ret = {
-                        b: [{
+                        chunks: [{
                             x: 1,
                             y: 0
                         }, {
@@ -557,7 +565,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             case 4: //O
                 {
                     ret = {
-                        b: [{
+                        chunks: [{
                             x: 0,
                             y: 0
                         }, {
@@ -579,7 +587,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             case 5: //S
                 {
                     ret = {
-                        b: [{
+                        chunks: [{
                             x: 0,
                             y: 0
                         }, {
@@ -604,7 +612,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             case 6: //T
                 {
                     ret = {
-                        b: [{
+                        chunks: [{
                             x: 1,
                             y: 0
                         }, {
@@ -629,7 +637,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             case 7: //Z
                 {
                     ret = {
-                        b: [{
+                        chunks: [{
                             x: 2,
                             y: 0
                         }, {
