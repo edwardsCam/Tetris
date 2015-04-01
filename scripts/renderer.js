@@ -133,6 +133,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             for (var i = 0; i < GAME.blocks.length; i++) {
                 if (!fall(GAME.blocks[i])) {
                     addToGround(i--);
+                    GAME.newblocktimer = 10000;
                 }
             }
         }
@@ -145,25 +146,28 @@ GAME.initialize = (function initialize(graphics, images, input) {
         var k = GAME.currentKey;
         if (k != 0) {
             var active = GAME.blocks[GAME.activeBlock];
-            console.log("Remove block keys");
-            removeBlockFromGrid(active);
-            if (k == 65) { // a
-                move(active, -1);
-            } else if (k == 68) { // d
-                move(active, 1);
-            } else if (k == 83) { // s
-                moveDown(active, 1);
-                GAME.falltimer = 0;
-            } else if (k == 87) { // w
-                hardDrop(active);
-                GAME.newblocktimer = 9000;
-            } else if (k == 81) { // q
-                rotateCounterClockwise(active);
-            } else if (k == 69) { // e
-                rotateClockwise(active);
+            if (active) {
+                removeBlockFromGrid(active);
+                if (k == 65) { // a
+                    move(active, -1);
+                } else if (k == 68) { // d
+                    move(active, 1);
+                } else if (k == 83) { // s
+                    moveDown(active, 1);
+                    GAME.falltimer = 0;
+                } else if (k == 87) { // w
+                    hardDrop(active);
+                    GAME.newblocktimer = 9000;
+                } else if (k == 81) { // q
+                    rotateCounterClockwise(active);
+                } else if (k == 69) { // e
+                    rotateClockwise(active);
+                }
+                placeBlockOnGrid(active);
+                GAME.changed_flag = true;
+            } else {
+                console.log("No active block!");
             }
-            placeBlockOnGrid(active);
-            GAME.changed_flag = true;
         }
 
         if (GAME.changed_flag) {
@@ -257,7 +261,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
     function fall(block) {
         if (canMoveDown(block)) {
-            console.log("Remove block fall");
             removeBlockFromGrid(block);
             moveDown(block, 1);
             placeBlockOnGrid(block);
@@ -268,7 +271,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
     function hardDrop(block) {
         while (canMoveDown(block)) {
-            console.log("Remove block hard drop");
             removeBlockFromGrid(block);
             moveDown(block, 1);
             placeBlockOnGrid(block);
@@ -276,7 +278,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function canMoveDown(block) {
-        console.log("Remove block can move down");
         removeBlockFromGrid(block);
         var ret = true;
         for (var i = 0; i < 4; i++) {
