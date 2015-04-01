@@ -215,6 +215,48 @@ GAME.initialize = (function initialize(graphics, images, input) {
         }
     }
 
+    function makeNewBlock() {
+        var block = generateRandomBlock();
+        moveIntoBoundsHoriz(block);
+        moveIntoBoundsVert(block);
+        var temp = [];
+        for (var i = 0; i < 4; i++) {
+            if (block.chunks[i].y == 0) {
+                temp[temp.length] = block.chunks[i];
+            }
+        }
+        var trycount = 0;
+        var can_make = true;
+        for (var i = 0; i < temp.length; i++) {
+            if (GAME.grid[temp[i].x][temp[i].y] != 0) {
+                move(block, (random(2) - 1 == 0 ? 1 : -1));
+                i = -1;
+                if (trycount++ > GAME.width) {
+                    can_make = false;
+                }
+            }
+        }
+        if (can_make) {
+            var l = GAME.blocks.length;
+            GAME.activeBlock = l;
+            GAME.blocks[l] = block;
+            placeBlockOnGrid(block);
+        } else {
+            // YOU LOSE!!
+        }
+
+    }
+
+    function fall(block) {
+        if (canMoveDown(block)) {
+            removeBlockFromGrid(block);
+            moveDown(block, 1);
+            placeBlockOnGrid(block);
+            return true;
+        }
+        return false;
+    }
+
     function checkForClears() {
         for (var i = GAME.height - 1; i >= 0; i--) {
             var hasBlock = false;
@@ -259,23 +301,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
         }
     }
 
-    function fall(block) {
-        if (canMoveDown(block)) {
-            removeBlockFromGrid(block);
-            moveDown(block, 1);
-            placeBlockOnGrid(block);
-            return true;
-        }
-        return false;
-    }
-
-    function hardDrop(block) {
-        while (canMoveDown(block)) {
-            removeBlockFromGrid(block);
-            moveDown(block, 1);
-            placeBlockOnGrid(block);
-        }
-    }
 
     function canMoveDown(block) {
         removeBlockFromGrid(block);
@@ -291,65 +316,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
         }
         placeBlockOnGrid(block);
         return ret;
-    }
-
-    function removeBlockFromGrid(block) {
-        for (var i = 0; i < 4; i++) {
-            var b = block.chunks[i];
-            var x = b.x;
-            var y = b.y;
-            if (isInBounds(x, y)) {
-                GAME.grid[x][y] = 0;
-            }
-        }
-    }
-
-    function placeBlockOnGrid(block) {
-        for (var i = 0; i < 4; i++) {
-            var b = block.chunks[i];
-            var x = b.x;
-            var y = b.y;
-            if (isInBounds(x, y)) {
-                GAME.grid[x][y] = block.color;
-            }
-        }
-    }
-
-    function isInBounds(x, y) {
-        return x >= 0 && x < GAME.width && y < GAME.height;
-    }
-
-    function isOnGround(x, y) {
-
-        if (y < -1) {
-            return false;
-        }
-        if (y >= GAME.height - 1) {
-            return true;
-        }
-        return GAME.ground[x][y + 1] == 1;
-    }
-
-    function moveDown(block, dist) {
-        while (dist-- > 0) {
-            for (var i = 0; i < 4; i++) {
-                block.chunks[i].y++;
-            }
-        }
-    }
-
-    function move(block, dist) {
-        while (dist != 0) {
-            if (canMoveHoriz(block, dist)) {
-                for (var i = 0; i < 4; i++) {
-                    block.chunks[i].x += dist;
-                }
-            }
-            if (dist < 0)
-                dist++;
-            else
-                dist--;
-        }
     }
 
     function canMoveHoriz(block, dist) {
@@ -372,6 +338,30 @@ GAME.initialize = (function initialize(graphics, images, input) {
         return true;
     }
 
+    function moveDown(block, dist) {
+        if (dist > 0) {
+            while (dist-- > 0) {
+                for (var i = 0; i < 4; i++) {
+                    block.chunks[i].y++;
+                }
+            }
+        }
+    }
+
+    function move(block, dist) {
+        while (dist != 0) {
+            if (canMoveHoriz(block, dist)) {
+                for (var i = 0; i < 4; i++) {
+                    block.chunks[i].x += dist;
+                }
+            }
+            if (dist < 0)
+                dist++;
+            else
+                dist--;
+        }
+    }
+
     function addToGround(b) {
         var c = GAME.blocks[b];
         for (var i = 0; i < 4; i++) {
@@ -381,36 +371,12 @@ GAME.initialize = (function initialize(graphics, images, input) {
         GAME.blocks.splice(b, 1);
     }
 
-    function makeNewBlock() {
-        var block = generateRandomBlock();
-        moveIntoBoundsHoriz(block);
-        moveIntoBoundsVert(block);
-        var temp = [];
-        for (var i = 0; i < 4; i++) {
-            if (block.chunks[i].y == 0) {
-                temp[temp.length] = block.chunks[i];
-            }
-        }
-        var trycount = 0;
-        var can_make = true;
-        for (var i = 0; i < temp.length; i++) {
-            if (GAME.grid[temp[i].x][temp[i].y] != 0) {
-                move(block, (random(2) - 1 == 0 ? 1 : -1));
-                i = -1;
-                if (trycount++ > GAME.width) {
-                    can_make = false;
-                }
-            }
-        }
-        if (can_make) {
-            var l = GAME.blocks.length;
-            GAME.activeBlock = l;
-            GAME.blocks[l] = block;
+    function hardDrop(block) {
+        while (canMoveDown(block)) {
+            removeBlockFromGrid(block);
+            moveDown(block, 1);
             placeBlockOnGrid(block);
-        } else {
-            // YOU LOSE!!
         }
-
     }
 
     function moveIntoBoundsHoriz(block) {
@@ -433,7 +399,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 }
             }
         } else if (max > GAME.width - 1) {
-            var diff = max - (GAME.width -1);
+            var diff = max - (GAME.width - 1);
             for (var j = 0; j < diff; j++) {
                 for (var i = 0; i < 4; i++) {
                     c[i].x--;
@@ -470,10 +436,47 @@ GAME.initialize = (function initialize(graphics, images, input) {
         }
     }
 
+    function removeBlockFromGrid(block) {
+        for (var i = 0; i < 4; i++) {
+            var b = block.chunks[i];
+            var x = b.x;
+            var y = b.y;
+            if (isInBounds(x, y)) {
+                GAME.grid[x][y] = 0;
+            }
+        }
+    }
+
+    function placeBlockOnGrid(block) {
+        for (var i = 0; i < 4; i++) {
+            var b = block.chunks[i];
+            var x = b.x;
+            var y = b.y;
+            if (isInBounds(x, y)) {
+                GAME.grid[x][y] = block.color;
+            }
+        }
+    }
+
     function rotateCounterClockwise(block) {
         rotateClockwise(block);
         rotateClockwise(block);
         rotateClockwise(block);
+    }
+
+    function isInBounds(x, y) {
+        return x >= 0 && x < GAME.width && y < GAME.height;
+    }
+
+    function isOnGround(x, y) {
+
+        if (y < -1) {
+            return false;
+        }
+        if (y >= GAME.height - 1) {
+            return true;
+        }
+        return GAME.ground[x][y + 1] == 1;
     }
 
     function rotateClockwise(block) {
