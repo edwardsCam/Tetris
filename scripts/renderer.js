@@ -68,6 +68,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
     GAME.newblocktimer = 10000;
 
     (function setVariables() {
+        GAME.score = 0;
         GAME.currentKey = 0;
         GAME.keyIsPressed = false;
         GAME.changed_flag = false;
@@ -229,6 +230,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             }
             if (blockCount == GAME.width) {
                 clearRow(i++);
+                GAME.score++;
             }
         }
     }
