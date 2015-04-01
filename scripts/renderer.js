@@ -145,6 +145,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
         var k = GAME.currentKey;
         if (k != 0) {
             var active = GAME.blocks[GAME.activeBlock];
+            console.log("Remove block keys");
             removeBlockFromGrid(active);
             if (k == 65) { // a
                 move(active, -1);
@@ -216,7 +217,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
             var hasBlock = false;
             var blockCount = 0;
             for (var j = 0; j < GAME.width; j++) {
-                if (GAME.grid[j][i] != 0) {
+                if (GAME.ground[j][i] == 1) {
                     hasBlock = true;
                     blockCount++;
                 }
@@ -225,7 +226,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 break;
             }
             if (blockCount == GAME.width) {
-                clearRow(i);
+                clearRow(i++);
             }
         }
     }
@@ -235,17 +236,20 @@ GAME.initialize = (function initialize(graphics, images, input) {
             GAME.ground[i][r] = 0;
             GAME.grid[i][r] = 0;
         }
-        dropGround();
+        dropGround(r);
     }
 
-    function dropGround() {
-        for (var i = 0; i < GAME.width; i++) {
-            for (var j = GAME.height - 2; j >= 0; j--) {
-                if (GAME.ground[i][j] == 1) {
-                    GAME.grid[i][j + 1] = GAME.grid[i][j];
-                    GAME.grid[i][j] = 0;
-                    GAME.ground[i][j + 1] = 1;
-                    GAME.ground[i][j] = 0;
+    function dropGround(r) {
+        for (var y = r; y >= 0; y--) {
+            for (var x = 0; x < GAME.width; x++) {
+                if (GAME.ground[x][y] == 1) {
+                    if (y < GAME.height - 1) {
+                        GAME.grid[x][y + 1] = GAME.grid[x][y];
+                        GAME.ground[x][y + 1] = 1;
+                    }
+                    GAME.grid[x][y] = 0;
+                    GAME.ground[x][y] = 0;
+                    y++;
                 }
             }
         }
@@ -253,6 +257,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
     function fall(block) {
         if (canMoveDown(block)) {
+            console.log("Remove block fall");
             removeBlockFromGrid(block);
             moveDown(block, 1);
             placeBlockOnGrid(block);
@@ -263,6 +268,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
     function hardDrop(block) {
         while (canMoveDown(block)) {
+            console.log("Remove block hard drop");
             removeBlockFromGrid(block);
             moveDown(block, 1);
             placeBlockOnGrid(block);
@@ -270,6 +276,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function canMoveDown(block) {
+        console.log("Remove block can move down");
         removeBlockFromGrid(block);
         var ret = true;
         for (var i = 0; i < 4; i++) {
@@ -654,6 +661,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 }
                 break;
         }
+        moveIntoBoundsHoriz(block);
     }
 
     function generateRandomBlock() {
