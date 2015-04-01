@@ -427,13 +427,14 @@ GAME.initialize = (function initialize(graphics, images, input) {
             }
         }
         if (min < 0) {
-            while (min++ < 0) {
+            for (var j = min; j < 0; j++) {
                 for (var i = 0; i < 4; i++) {
                     c[i].x++;
                 }
             }
         } else if (max > GAME.width - 1) {
-            while (max-- > GAME.width - 1) {
+            var diff = max - (GAME.width -1);
+            for (var j = 0; j < diff; j++) {
                 for (var i = 0; i < 4; i++) {
                     c[i].x--;
                 }
@@ -454,13 +455,14 @@ GAME.initialize = (function initialize(graphics, images, input) {
             }
         }
         if (max > 0) {
-            while (max-- > 0) {
+            for (var j = 0; j < max; j++) {
                 for (var i = 0; i < 4; i++) {
                     c[i].y--;
                 }
             }
         } else if (min < -3) {
-            while (min++ < -3) {
+            var diff = min + 3;
+            for (var j = 0; j > diff; j--) {
                 for (var i = 0; i < 4; i++) {
                     c[i].y++;
                 }
@@ -495,11 +497,11 @@ GAME.initialize = (function initialize(graphics, images, input) {
                     switch (block.dir) {
                         case 0:
                             {
-                                d[0].x++
-                                    d[0].y--;
+                                d[0].x++;
+                                d[0].y--;
                                 d[2].x--;
-                                d[2].y++
-                                    d[3].x -= 2;
+                                d[2].y++;
+                                d[3].x -= 2;
                                 d[3].y += 2;
                             }
                             break;
