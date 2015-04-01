@@ -165,8 +165,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 }
                 placeBlockOnGrid(active);
                 GAME.changed_flag = true;
-            } else {
-                console.log("No active block!");
             }
         }
 
@@ -447,31 +445,43 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
     function rotateClockwise(block) {
         var c = block.chunks;
+        var d = [{
+            x: c[0].x,
+            y: c[0].y
+        }, {
+            x: c[1].x,
+            y: c[1].y
+        }, {
+            x: c[2].x,
+            y: c[2].y
+        }, {
+            x: c[3].x,
+            y: c[3].y
+        }];
         switch (block.color) {
             case 1:
                 {
                     switch (block.dir) {
                         case 0:
                             {
-                                c[0].x++;
-                                c[0].y--;
-                                c[2].x--;
-                                c[2].y++;
-                                c[3].x -= 2;
-                                c[3].y += 2;
+                                d[0].x++
+                                    d[0].y--;
+                                d[2].x--;
+                                d[2].y++
+                                    d[3].x -= 2;
+                                d[3].y += 2;
                             }
                             break;
                         case 1:
                             {
-                                c[0].x--;
-                                c[0].y++;
-                                c[2].x++;
-                                c[2].y--;
-                                c[3].x += 2;
-                                c[3].y -= 2;
+                                d[0].x--;
+                                d[0].y++;
+                                d[2].x++;
+                                d[2].y--;
+                                d[3].x += 2;
+                                d[3].y -= 2;
                             }
                     }
-                    block.dir = ++block.dir % 2;
                 }
                 break;
             case 2:
@@ -479,45 +489,44 @@ GAME.initialize = (function initialize(graphics, images, input) {
                     switch (block.dir) {
                         case 0:
                             {
-                                c[0].x++;
-                                c[0].y--;
-                                c[2].x++;
-                                c[2].y++;
-                                c[3].x += 2;
-                                c[3].y += 2;
+                                d[0].x++;
+                                d[0].y--;
+                                d[2].x++;
+                                d[2].y++;
+                                d[3].x += 2;
+                                d[3].y += 2;
                             }
                             break;
                         case 1:
                             {
-                                c[0].x++;
-                                c[0].y++;
-                                c[2].x--;
-                                c[2].y++;
-                                c[3].x -= 2;
-                                c[3].y += 2;
+                                d[0].x++;
+                                d[0].y++;
+                                d[2].x--;
+                                d[2].y++;
+                                d[3].x -= 2;
+                                d[3].y += 2;
                             }
                             break;
                         case 2:
                             {
-                                c[0].x--;
-                                c[0].y++;
-                                c[2].x--;
-                                c[2].y--;
-                                c[3].x -= 2;
-                                c[3].y -= 2;
+                                d[0].x--;
+                                d[0].y++;
+                                d[2].x--;
+                                d[2].y--;
+                                d[3].x -= 2;
+                                d[3].y -= 2;
                             }
                             break;
                         case 3:
                             {
-                                c[0].x--;
-                                c[0].y--;
-                                c[2].x++;
-                                c[2].y--;
-                                c[3].x += 2;
-                                c[3].y -= 2;
+                                d[0].x--;
+                                d[0].y--;
+                                d[2].x++;
+                                d[2].y--;
+                                d[3].x += 2;
+                                d[3].y -= 2;
                             }
                     }
-                    block.dir = ++block.dir % 4;
                 }
                 break;
             case 3:
@@ -526,45 +535,44 @@ GAME.initialize = (function initialize(graphics, images, input) {
 
                         case 0:
                             {
-                                c[0].x--;
-                                c[0].y++;
-                                c[2].x++;
-                                c[2].y++;
-                                c[3].x += 2;
-                                c[3].y += 2;
+                                d[0].x--;
+                                d[0].y++;
+                                d[2].x++;
+                                d[2].y++;
+                                d[3].x += 2;
+                                d[3].y += 2;
                             }
                             break;
                         case 1:
                             {
-                                c[0].x--;
-                                c[0].y--;
-                                c[2].x--;
-                                c[2].y++;
-                                c[3].x -= 2;
-                                c[3].y += 2;
+                                d[0].x--;
+                                d[0].y--;
+                                d[2].x--;
+                                d[2].y++;
+                                d[3].x -= 2;
+                                d[3].y += 2;
                             }
                             break;
                         case 2:
                             {
-                                c[0].x++;
-                                c[0].y--;
-                                c[2].x--;
-                                c[2].y--;
-                                c[3].x -= 2;
-                                c[3].y -= 2;
+                                d[0].x++;
+                                d[0].y--;
+                                d[2].x--;
+                                d[2].y--;
+                                d[3].x -= 2;
+                                d[3].y -= 2;
                             }
                             break;
                         case 3:
                             {
-                                c[0].x++;
-                                c[0].y++;
-                                c[2].x++;
-                                c[2].y--;
-                                c[3].x += 2;
-                                c[3].y -= 2;
+                                d[0].x++;
+                                d[0].y++;
+                                d[2].x++;
+                                d[2].y--;
+                                d[3].x += 2;
+                                d[3].y -= 2;
                             }
                     }
-                    block.dir = ++block.dir % 4;
                 }
                 break;
             case 5:
@@ -572,23 +580,22 @@ GAME.initialize = (function initialize(graphics, images, input) {
                     switch (block.dir) {
                         case 0:
                             {
-                                c[0].x++;
-                                c[0].y--;
-                                c[2].x++;
-                                c[2].y++;
-                                c[3].y += 2;
+                                d[0].x++;
+                                d[0].y--;
+                                d[2].x++;
+                                d[2].y++;
+                                d[3].y += 2;
                             }
                             break;
                         case 1:
                             {
-                                c[0].x--;
-                                c[0].y++;
-                                c[2].x--;
-                                c[2].y--;
-                                c[3].y -= 2;
+                                d[0].x--;
+                                d[0].y++;
+                                d[2].x--;
+                                d[2].y--;
+                                d[3].y -= 2;
                             }
                     }
-                    block.dir = ++block.dir % 2;
                 }
                 break;
             case 6:
@@ -596,45 +603,44 @@ GAME.initialize = (function initialize(graphics, images, input) {
                     switch (block.dir) {
                         case 0:
                             {
-                                c[0].x--;
-                                c[0].y--;
-                                c[1].x++;
-                                c[1].y--;
-                                c[3].x--;
-                                c[3].y++;
+                                d[0].x--;
+                                d[0].y--;
+                                d[1].x++;
+                                d[1].y--;
+                                d[3].x--;
+                                d[3].y++;
                             }
                             break;
                         case 1:
                             {
-                                c[0].x++;
-                                c[0].y--;
-                                c[1].x++;
-                                c[1].y++;
-                                c[3].x--;
-                                c[3].y--;
+                                d[0].x++;
+                                d[0].y--;
+                                d[1].x++;
+                                d[1].y++;
+                                d[3].x--;
+                                d[3].y--;
                             }
                             break;
                         case 2:
                             {
-                                c[0].x++;
-                                c[0].y++;
-                                c[1].x--;
-                                c[1].y++;
-                                c[3].x++;
-                                c[3].y--;
+                                d[0].x++;
+                                d[0].y++;
+                                d[1].x--;
+                                d[1].y++;
+                                d[3].x++;
+                                d[3].y--;
                             }
                             break;
                         case 3:
                             {
-                                c[0].x--;
-                                c[0].y++;
-                                c[1].x--;
-                                c[1].y--;
-                                c[3].x++;
-                                c[3].y++;
+                                d[0].x--;
+                                d[0].y++;
+                                d[1].x--;
+                                d[1].y--;
+                                d[3].x++;
+                                d[3].y++;
                             }
                     }
-                    block.dir = ++block.dir % 4;
                 }
                 break;
             case 7:
@@ -642,27 +648,44 @@ GAME.initialize = (function initialize(graphics, images, input) {
                     switch (block.dir) {
                         case 0:
                             {
-                                c[0].x--;
-                                c[0].y++;
-                                c[2].x++;
-                                c[2].y++;
-                                c[3].x += 2;
+                                d[0].x--;
+                                d[0].y++;
+                                d[2].x++;
+                                d[2].y++;
+                                d[3].x += 2;
                             }
                             break;
                         case 1:
                             {
-                                c[0].x++;
-                                c[0].y--;
-                                c[2].x--;
-                                c[2].y--;
-                                c[3].x -= 2;
+                                d[0].x++;
+                                d[0].y--;
+                                d[2].x--;
+                                d[2].y--;
+                                d[3].x -= 2;
                             }
                     }
-                    block.dir = ++block.dir % 2;
                 }
                 break;
         }
-        moveIntoBoundsHoriz(block);
+        var can_rotate = true;
+        for (var i = 0; i < 4; i++) {
+            var ox = d[i].x;
+            var oy = d[i].y;
+            if (isInBounds(ox, oy) && GAME.grid[ox][oy] != 0) {
+                can_rotate = false;
+                break;
+            }
+        }
+
+        if (can_rotate) {
+            for (var i = 0; i < 4; i++) {
+                c[i].x = d[i].x;
+                c[i].y = d[i].y;
+            }
+            var co = block.color;
+            block.dir = ++block.dir % ((co == 1 || co == 5 || co == 7) ? 2 : 4);
+            moveIntoBoundsHoriz(block);
+        }
     }
 
     function generateRandomBlock() {
