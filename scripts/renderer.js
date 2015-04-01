@@ -320,7 +320,14 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function isOnGround(x, y) {
-        return y >= 0 && (y >= GAME.height - 1 || (isInBounds(x, y - 1) ? GAME.grid[x][y + 1] != 0 : true));
+
+        if (y < -1) {
+            return false;
+        }
+        if (y >= GAME.height - 1) {
+            return true;
+        }
+        return GAME.ground[x][y + 1] == 1;
     }
 
     function moveDown(block, dist) {
@@ -378,10 +385,32 @@ GAME.initialize = (function initialize(graphics, images, input) {
         var block = generateRandomBlock();
         moveIntoBoundsHoriz(block);
         moveIntoBoundsVert(block);
-        var i = GAME.blocks.length;
-        GAME.activeBlock = i;
-        GAME.blocks[i] = block;
-        placeBlockOnGrid(block);
+        var temp = [];
+        for (var i = 0; i < 4; i++) {
+            if (block.chunks[i].y == 0) {
+                temp[temp.length] = block.chunks[i];
+            }
+        }
+        var trycount = 0;
+        var can_make = true;
+        for (var i = 0; i < temp.length; i++) {
+            if (GAME.grid[temp[i].x][temp[i].y] != 0) {
+                move(block, (random(2) - 1 == 0 ? 1 : -1));
+                i = -1;
+                if (trycount++ > GAME.width) {
+                    can_make = false;
+                }
+            }
+        }
+        if (can_make) {
+            var l = GAME.blocks.length;
+            GAME.activeBlock = l;
+            GAME.blocks[l] = block;
+            placeBlockOnGrid(block);
+        } else {
+            // YOU LOSE!!
+        }
+
     }
 
     function moveIntoBoundsHoriz(block) {
