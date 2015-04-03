@@ -82,8 +82,8 @@ GAME.initialize = function initialize() {
     var smoke = GAME.particleSystem({
         image: GAME.images['img/fire.png'],
         center: {
-            x: 700,
-            y: 400
+            x: 0,
+            y: 0
         },
         speed: {
             mean: 40,
@@ -190,8 +190,10 @@ GAME.initialize = function initialize() {
                 } else if (k == 68) { // d
                     move(active, 1);
                 } else if (k == 83) { // s
-                    moveDown(active, 1);
-                    GAME.falltimer = 0;
+                    if (canMoveDown(active)) {
+                        moveDown(active, 1);
+                        GAME.falltimer = 0;
+                    }
                 } else if (k == 87) { // w
                     hardDrop(active);
                     GAME.newblocktimer = 9000;
@@ -253,8 +255,8 @@ GAME.initialize = function initialize() {
         }
         if (GAME.particles.length > 0) {
             GAME.sweeptimer += delta;
-            for (var k = 0; k < GAME.particles.length; k++) {
-                var p = GAME.particles[k];
+            for (var i = 0; i < GAME.particles.length; i++) {
+                var p = GAME.particles[i];
                 if (GAME.sweeptimer < GAME.sweeptime) {
                     smoke.setCenter({
                         x: (GAME.sweeptimer / GAME.sweeptime) * GAME.blocksize * GAME.width,
@@ -265,9 +267,9 @@ GAME.initialize = function initialize() {
                     smoke.create();
                     smoke.create();
                 }
-                smoke.update(delta / 1000);
-                smoke.render();
             }
+            smoke.update(delta / 1000);
+            smoke.render();
             if (smoke.isEmpty()) {
                 GAME.sweeptimer = 0;
                 GAME.particles = [];
@@ -369,7 +371,6 @@ GAME.initialize = function initialize() {
 
 
     function canMoveDown(block) {
-        removeBlockFromGrid(block);
         var ret = true;
         for (var i = 0; i < 4; i++) {
             var b = block.chunks[i];
@@ -380,7 +381,6 @@ GAME.initialize = function initialize() {
                 break;
             }
         }
-        placeBlockOnGrid(block);
         return ret;
     }
 

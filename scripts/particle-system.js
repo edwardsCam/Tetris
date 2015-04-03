@@ -85,11 +85,10 @@ GAME.particleSystem = function(spec) {
     }
 
     that.isEmpty = function() {
-        var count = 0;
         for (var value in particles) {
-            count++;
+            return false;
         }
-        return count == 0;
+        return true;
     }
 
     //------------------------------------------------------------------
