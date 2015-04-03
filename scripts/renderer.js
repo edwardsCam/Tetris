@@ -258,7 +258,7 @@ GAME.initialize = function initialize() {
                 if (GAME.sweeptimer < GAME.sweeptime) {
                     smoke.setCenter({
                         x: (GAME.sweeptimer / GAME.sweeptime) * GAME.blocksize * GAME.width,
-                        y: GAME.blocksize/2 + p * GAME.blocksize
+                        y: GAME.blocksize / 2 + p * GAME.blocksize
                     });
                     smoke.create();
                     smoke.create();
