@@ -1,15 +1,7 @@
 // Derived from sample code taken from http://blog.sklambert.com/html5-game-tutorial-game-ui-canvas-vs-dom/
 
-var canvas = document.getElementById('canvas-menu'),
+var canvas = document.getElementById('canvas-hs'),
     ctx = canvas.getContext('2d');
-
-window.onload = function() {
-    var logo = new Image();
-    logo.onload = function() {
-        ctx.drawImage(logo, canvas.width / 2 - 250, canvas.height / 4 - 100);
-    };
-    logo.src = "img/logo.jpg";
-};
 
 var all_colors = [{
     top: '#1879BD',
@@ -148,36 +140,15 @@ var all_colors = [{
         'active': all_colors[2]
     };
 
-    var playButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 25, bw, 50, 'New Game', default_colors,
+    var backButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 25, bw, 50, 'Back', default_colors,
             function() {
-                document.location.href = "maingame.html";
-            }),
-        hsButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 + 50, bw, 50, 'High Scores', default_colors,
-            function() {
-                document.location.href = "hs.html";
-            }),
-        controlsButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 + 125, bw, 50, 'Controls', default_colors,
-            function() {
-                document.location.href = "controls.html";
-            }),
-        credButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 + 200, bw, 50, 'Credits', default_colors,
-            function() {
-                document.location.href = "credits.html";
+                document.location.href = "index.html";
             });
 
     function animate() {
         requestAnimationFrame(animate);
-        playButton.update();
-        playButton.draw();
-
-        hsButton.update();
-        hsButton.draw();
-
-        controlsButton.update();
-        controlsButton.draw();
-
-        credButton.update();
-        credButton.draw();
+        backButton.update();
+        backButton.draw();
     }
 
     requestAnimationFrame(animate);
