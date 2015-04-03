@@ -17,21 +17,21 @@
             window.onload = function() {
                 var logo = new Image();
                 logo.onload = function() {
-                    ctx.drawImage(logo, canvas.width / 2 - 250, canvas.height/4 - 100);
+                    ctx.drawImage(logo, canvas.width / 2 - 250, canvas.height / 4 - 100);
                 };
                 logo.src = "img/logo.jpg";
             };
 
             var all_colors = [{
-                        top: '#1879BD',
-                        bottom: '#084D79'
-                    },{
-                        top: '#678834',
-                        bottom: '#093905'
-                    },{
-                        top: '#EB7723',
-                        bottom: '#A80000'
-                    }];
+                top: '#1879BD',
+                bottom: '#084D79'
+            }, {
+                top: '#678834',
+                bottom: '#093905'
+            }, {
+                top: '#EB7723',
+                bottom: '#A80000'
+            }];
 
 
             (function() {
@@ -86,9 +86,9 @@
                  * @param {string} colors.active.top - Top active button color.
                  * @param {string} colors.active.bottom - Bottom active button color.
                  *
-                 * @param {function} clickCB - The funciton to call when the button is clicked.
+                 * @param {function} action - The funciton to call when the button is clicked.
                  */
-                function Button(x, y, w, h, text, colors, clickCB) {
+                function Button(x, y, w, h, text, colors, action) {
                     this.x = x;
                     this.y = y;
                     this.width = w;
@@ -115,7 +115,7 @@
                                 isClicking = true;
                             } else {
                                 if (isClicking) {
-                                    clickCB();
+                                    action();
                                 }
                                 isClicking = false;
                             }
@@ -151,18 +151,45 @@
                     };
                 }
 
-                var playButton = new Button(canvas.width / 2 - 50, canvas.height / 2 - 25, 100, 50, 'Play', {
+                var bw = 200,
+                    bh = 50;
+
+                var default_colors = {
                     'default': all_colors[0],
                     'hover': all_colors[1],
                     'active': all_colors[2]
-                }, function() {
-                    document.location.href = "maingame.html";
-                });
+                };
+
+                var playButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 25, bw, 50, 'New Game', default_colors,
+                        function() {
+                            document.location.href = "maingame.html";
+                        }),
+                    hsButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 + 50, bw, 50, 'High Scores', default_colors,
+                        function() {
+                            //todo
+                        }),
+                    controlsButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 + 125, bw, 50, 'Controls', default_colors,
+                        function() {
+                            //todo
+                        }),
+                    credButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 + 200, bw, 50, 'Credits', default_colors,
+                        function() {
+                            //todo
+                        });
 
                 function animate() {
                     requestAnimationFrame(animate);
                     playButton.update();
                     playButton.draw();
+
+                    hsButton.update();
+                    hsButton.draw();
+
+                    controlsButton.update();
+                    controlsButton.draw();
+
+                    credButton.update();
+                    credButton.draw();
                 }
 
                 requestAnimationFrame(animate);
