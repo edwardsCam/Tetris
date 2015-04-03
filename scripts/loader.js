@@ -1,8 +1,8 @@
 var GAME = {
     images: {},
 
-    width : 10,
-    height : 20,
+    width: 10,
+    height: 20,
 
     status: {
         preloadRequest: 0,
@@ -21,7 +21,11 @@ window.addEventListener('load', function() {
     console.log('Loading resources...');
     Modernizr.load([{
         load: [
+            'preload!scripts/random.js',
+            'preload!scripts/particle-system.js',
             'preload!scripts/renderer.js',
+            'preload!img/fire.png',
+            'preload!img/smoke.png'
         ],
         complete: function() {
             console.log('All files requested for loading...');

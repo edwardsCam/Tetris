@@ -32,7 +32,23 @@ GAME.graphics = (function() {
     //
     //------------------------------------------------------------------
     function clear() {
-        context.clear();
+        GAME.context.clear();
+    }
+
+    function drawImage(spec) {
+        GAME.context.save();
+
+        GAME.context.translate(spec.center.x, spec.center.y);
+        GAME.context.rotate(spec.rotation);
+        GAME.context.translate(-spec.center.x, -spec.center.y);
+
+        GAME.context.drawImage(
+            spec.image,
+            spec.center.x - spec.size / 2,
+            spec.center.y - spec.size / 2,
+            spec.size, spec.size);
+
+        GAME.context.restore();
     }
 
     //------------------------------------------------------------------
@@ -51,7 +67,7 @@ GAME.graphics = (function() {
 
     return {
         clear: clear,
-        Texture: Texture,
+        drawImage: drawImage
     };
 }());
 
@@ -60,18 +76,37 @@ GAME.graphics = (function() {
 // This function performs the one-time game initialization.
 //
 //------------------------------------------------------------------
-GAME.initialize = (function initialize(graphics, images, input) {
+GAME.initialize = function initialize() {
     'use strict';
+
+    var smoke = GAME.particleSystem({
+        image: GAME.images['img/fire.png'],
+        center: {
+            x: 700,
+            y: 400
+        },
+        speed: {
+            mean: 40,
+            stdev: 10
+        },
+        lifetime: {
+            mean: 2,
+            stdev: 0.8
+        }
+    });
 
     GAME.currtime = performance.now();
     GAME.falltimer = 0;
     GAME.newblocktimer = 10000;
+    GAME.sweeptimer = 0;
+    GAME.sweeptime = 400;
 
     (function setVariables() {
         GAME.score = 0;
         GAME.currentKey = 0;
         GAME.keyIsPressed = false;
         GAME.changed_flag = false;
+        GAME.particles = [];
         GAME.blocks = [];
         GAME.ground = [];
         GAME.grid = [];
@@ -101,13 +136,10 @@ GAME.initialize = (function initialize(graphics, images, input) {
     function gameLoop() {
 
         var delta = performance.now() - GAME.currtime;
-        GAME.currtime += delta;
-        GAME.falltimer += delta;
-        GAME.newblocktimer += delta;
 
         GatherInput();
         UpdateGameLogic(delta);
-        Render();
+        Render(delta);
 
         requestAnimationFrame(gameLoop);
     };
@@ -129,6 +161,10 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function UpdateGameLogic(delta) {
+        GAME.currtime += delta;
+        GAME.falltimer += delta;
+        GAME.newblocktimer += delta;
+
         if (GAME.falltimer > 500) {
             GAME.falltimer -= 500;
             for (var i = 0; i < GAME.blocks.length; i++) {
@@ -177,7 +213,8 @@ GAME.initialize = (function initialize(graphics, images, input) {
         checkForClears();
     }
 
-    function Render() {
+    function Render(delta) {
+        GAME.graphics.clear();
         for (var i = 0; i < GAME.width; i++) {
             for (var j = 0; j < GAME.height; j++) {
 
@@ -211,6 +248,29 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 }
                 GAME.context.fillStyle = color;
                 GAME.context.fillRect(i * GAME.blocksize, j * GAME.blocksize, GAME.blocksize, GAME.blocksize);
+            }
+
+        }
+        if (GAME.particles.length > 0) {
+            GAME.sweeptimer += delta;
+            for (var k = 0; k < GAME.particles.length; k++) {
+                var p = GAME.particles[k];
+                if (GAME.sweeptimer < GAME.sweeptime) {
+                    smoke.setCenter({
+                        x: (GAME.sweeptimer / GAME.sweeptime) * GAME.blocksize * GAME.width,
+                        y: GAME.blocksize/2 + p * GAME.blocksize
+                    });
+                    smoke.create();
+                    smoke.create();
+                    smoke.create();
+                    smoke.create();
+                }
+                smoke.update(delta / 1000);
+                smoke.render();
+            }
+            if (smoke.isEmpty()) {
+                GAME.sweeptimer = 0;
+                GAME.particles = [];
             }
         }
     }
@@ -258,6 +318,7 @@ GAME.initialize = (function initialize(graphics, images, input) {
     }
 
     function checkForClears() {
+        var rows = [];
         for (var i = GAME.height - 1; i >= 0; i--) {
             var hasBlock = false;
             var blockCount = 0;
@@ -271,13 +332,18 @@ GAME.initialize = (function initialize(graphics, images, input) {
                 break;
             }
             if (blockCount == GAME.width) {
-                clearRow(i++);
+                GAME.sweeptimer = 0;
+                rows[rows.length] = i;
                 GAME.score++;
             }
+        }
+        for (var i = 0; i < rows.length; i++) {
+            clearRow(rows[i]);
         }
     }
 
     function clearRow(r) {
+        GAME.particles[GAME.particles.length] = r;
         for (var i = 0; i < GAME.width; i++) {
             GAME.ground[i][r] = 0;
             GAME.grid[i][r] = 0;
@@ -921,12 +987,6 @@ GAME.initialize = (function initialize(graphics, images, input) {
         return ret;
     }
 
-    return function() {
-        console.log('game initializing...');
-        //
-        // Have to wait until here to create the texture, because the images aren't
-        // loaded and ready until this point.
+    requestAnimationFrame(gameLoop);
 
-        requestAnimationFrame(gameLoop);
-    };
-}(GAME.graphics, GAME.images, GAME.input));
+};
