@@ -11,9 +11,31 @@
         <script>
             // Derived from sample code taken from http://blog.sklambert.com/html5-game-tutorial-game-ui-canvas-vs-dom/
 
+            var canvas = document.getElementById('canvas-menu'),
+                ctx = canvas.getContext('2d');
+
+            window.onload = function() {
+                var logo = new Image();
+                logo.onload = function() {
+                    ctx.drawImage(logo, canvas.width / 2 - 250, canvas.height/4 - 100);
+                };
+                logo.src = "img/logo.jpg";
+            };
+
+            var all_colors = [{
+                        top: '#1879BD',
+                        bottom: '#084D79'
+                    },{
+                        top: '#678834',
+                        bottom: '#093905'
+                    },{
+                        top: '#EB7723',
+                        bottom: '#A80000'
+                    }];
+
+
             (function() {
-                var canvas = document.getElementById('canvas-menu');
-                var ctx = canvas.getContext('2d');
+
                 ctx.font = '15px sans-serif';
 
                 // mouse event variables
@@ -93,7 +115,7 @@
                                 isClicking = true;
                             } else {
                                 if (isClicking) {
-                                    document.location.href = "maingame.html";
+                                    clickCB();
                                 }
                                 isClicking = false;
                             }
@@ -130,20 +152,11 @@
                 }
 
                 var playButton = new Button(canvas.width / 2 - 50, canvas.height / 2 - 25, 100, 50, 'Play', {
-                    'default': {
-                        top: '#1879BD',
-                        bottom: '#084D79'
-                    },
-                    'hover': {
-                        top: '#678834',
-                        bottom: '#093905'
-                    },
-                    'active': {
-                        top: '#EB7723',
-                        bottom: '#A80000'
-                    }
+                    'default': all_colors[0],
+                    'hover': all_colors[1],
+                    'active': all_colors[2]
                 }, function() {
-                    console.log('Button clicked');
+                    document.location.href = "maingame.html";
                 });
 
                 function animate() {
