@@ -1,6 +1,6 @@
 // Derived from sample code taken from http://blog.sklambert.com/html5-game-tutorial-game-ui-canvas-vs-dom/
 
-var canvas = document.getElementById('canvas-controls'),
+var canvas = document.getElementById('canvas-menu'),
     ctx = canvas.getContext('2d');
 
 var all_colors = [{
@@ -16,6 +16,9 @@ var all_colors = [{
 
 
 (function() {
+
+console.log(CONTROLS);
+  //  document.getElementById('left').value = CONTROLS["left"];
 
     ctx.font = '15px sans-serif';
 
@@ -140,7 +143,11 @@ var all_colors = [{
         'active': all_colors[2]
     };
 
-    var backButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 25, bw, 50, 'Back', default_colors,
+    var saveButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 100, bw, 50, 'Save', default_colors,
+            function() {
+                //todo
+            }),
+    backButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 25, bw, 50, 'Exit', default_colors,
             function() {
                 document.location.href = "index.html";
             });
@@ -149,6 +156,9 @@ var all_colors = [{
         requestAnimationFrame(animate);
         backButton.update();
         backButton.draw();
+
+        saveButton.update();
+        saveButton.draw();
     }
 
     requestAnimationFrame(animate);
