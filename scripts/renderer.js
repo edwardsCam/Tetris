@@ -97,7 +97,7 @@ GAME.initialize = function initialize() {
 
     GAME.currtime = performance.now();
     GAME.falltimer = 0;
-    GAME.newblocktimer = 10000;
+    GAME.newblocktimer = 5000;
     GAME.sweeptimer = 0;
     GAME.sweeptime = 400;
 
@@ -106,6 +106,7 @@ GAME.initialize = function initialize() {
         GAME.currentKey = 0;
         GAME.keyIsPressed = false;
         GAME.changed_flag = false;
+        GAME.pending_block = null;
         GAME.particles = [];
         GAME.blocks = [];
         GAME.ground = [];
@@ -119,6 +120,7 @@ GAME.initialize = function initialize() {
                 GAME.ground[i][j] = 0;
             }
         }
+        makeNewBlock();
     }());
 
     function random(top) {
@@ -175,10 +177,17 @@ GAME.initialize = function initialize() {
             }
         }
 
+
         if (GAME.newblocktimer > 10000) {
             GAME.newblocktimer -= 10000;
+            var l = GAME.blocks.length;
+            GAME.activeBlock = l;
+            moveIntoBoundsVert(GAME.pending_block);
+            GAME.blocks[l] = GAME.pending_block;
+            placeBlockOnGrid(GAME.pending_block);
             makeNewBlock();
         }
+
 
         var k = GAME.currentKey;
         if (k != 0) {
@@ -216,42 +225,56 @@ GAME.initialize = function initialize() {
     }
 
     function Render(delta) {
+        var color;
         GAME.graphics.clear();
         for (var i = 0; i < GAME.width; i++) {
             for (var j = 0; j < GAME.height; j++) {
-
-                var color;
-
-                switch (GAME.grid[i][j]) {
-                    case 0:
-                        color = "rgb(50,50,50)";
-                        break;
-                    case 1:
-                        color = "rgb(255,0,0)";
-                        break;
-                    case 2:
-                        color = "rgb(255,0,255)";
-                        break;
-                    case 3:
-                        color = "rgb(255,255,0)";
-                        break;
-                    case 4:
-                        color = "rgb(0,255,255)";
-                        break;
-                    case 5:
-                        color = "rgb(0,0,255)";
-                        break;
-                    case 6:
-                        color = "rgb(200,200,200)";
-                        break;
-                    case 7:
-                        color = "rgb(0,255,0)";
-                        break;
-                }
-                GAME.context.fillStyle = color;
+                GAME.context.fillStyle = getColor(GAME.grid[i][j]);
                 GAME.context.fillRect(i * GAME.blocksize, j * GAME.blocksize, GAME.blocksize, GAME.blocksize);
             }
+        }
 
+        if (GAME.pending_block != null) {
+            var minx = 5;
+            var miny = 5;
+            for (var i = 0; i < 4; i++) {
+                var b = GAME.pending_block.chunks[i];
+                if (b.x < minx)
+                    minx = b.x;
+                if (b.y < miny)
+                    miny = b.y;
+            }
+            while (minx > 0) {
+                minx--;
+                for (var i = 0; i < 4; i++) {
+                    GAME.pending_block.chunks[i].x--;
+                }
+            }
+            while (minx < 0) {
+                minx++;
+                for (var i = 0; i < 4; i++) {
+                    GAME.pending_block.chunks[i].x++;
+                }
+            }
+            while (miny > 0) {
+                miny--;
+                for (var i = 0; i < 4; i++) {
+                    GAME.pending_block.chunks[i].y--;
+                }
+            }
+            while (miny < 0) {
+                miny++;
+                for (var i = 0; i < 4; i++) {
+                    GAME.pending_block.chunks[i].y++;
+                }
+            }
+            GAME.context.fillStyle = getColor(GAME.pending_block.color);
+            var basex = GAME.blocksize * GAME.width + GAME.blocksize * 2;
+            var basey = GAME.blocksize * 2;
+            for (var i = 0; i < 4; i++) {
+                var b = GAME.pending_block.chunks[i];
+                GAME.context.fillRect(basex + b.x * GAME.blocksize, basey + b.y * GAME.blocksize, GAME.blocksize, GAME.blocksize);
+            }
         }
         if (GAME.particles.length > 0) {
             GAME.sweeptimer += delta;
@@ -277,6 +300,27 @@ GAME.initialize = function initialize() {
         }
     }
 
+    function getColor(b) {
+        switch (b) {
+            case 0:
+                return "rgb(50,50,50)";
+            case 1:
+                return "rgb(255,0,0)";
+            case 2:
+                return "rgb(255,0,255)";
+            case 3:
+                return "rgb(255,255,0)";
+            case 4:
+                return "rgb(0,255,255)";
+            case 5:
+                return "rgb(0,0,255)";
+            case 6:
+                return "rgb(200,200,200)";
+            case 7:
+                return "rgb(0,255,0)";
+        }
+    }
+
     function makeNewBlock() {
         var block = generateRandomBlock();
         moveIntoBoundsHoriz(block);
@@ -299,10 +343,7 @@ GAME.initialize = function initialize() {
             }
         }
         if (can_make) {
-            var l = GAME.blocks.length;
-            GAME.activeBlock = l;
-            GAME.blocks[l] = block;
-            placeBlockOnGrid(block);
+            GAME.pending_block = block;
         } else {
             // YOU LOSE!!
         }
