@@ -79,8 +79,8 @@ GAME.graphics = (function() {
 GAME.initialize = function initialize() {
     'use strict';
 
-    var smoke = GAME.particleSystem({
-        image: GAME.images['img/smoke.png'],
+    var fire = GAME.particleSystem({
+        image: GAME.images['img/fire.png'],
         center: {
             x: 0,
             y: 0
@@ -99,11 +99,13 @@ GAME.initialize = function initialize() {
 
     GAME.currtime = performance.now();
     GAME.falltimer = 0;
-    GAME.newblocktimer = 7500;
     GAME.sweeptimer = 0;
     GAME.sweeptime = 400;
 
     (function setVariables() {
+        GAME.pulse = 400;
+        GAME.newblocktime = GAME.pulse * GAME.height;
+        GAME.newblocktimer = GAME.newblocktime - 2000;
         GAME.level = 1;
         GAME.lines_cleared = 0;
         GAME.score = 0;
@@ -172,19 +174,19 @@ GAME.initialize = function initialize() {
         GAME.falltimer += delta;
         GAME.newblocktimer += delta;
 
-        if (GAME.falltimer > 500) {
-            GAME.falltimer -= 500;
+        if (GAME.falltimer > GAME.pulse) {
+            GAME.falltimer -= GAME.pulse;
             for (var i = 0; i < GAME.blocks.length; i++) {
                 if (!fall(GAME.blocks[i])) {
                     addToGround(i--);
-                    GAME.newblocktimer = 10000;
+                    GAME.newblocktimer = GAME.newblocktime;
                 }
             }
         }
 
 
-        if (GAME.newblocktimer > 10000) {
-            GAME.newblocktimer -= 10000;
+        if (GAME.newblocktimer > GAME.newblocktime) {
+            GAME.newblocktimer -= GAME.newblocktime;
             var l = GAME.blocks.length;
             GAME.activeBlock = l;
             moveIntoBoundsVert(GAME.pending_block);
@@ -214,7 +216,7 @@ GAME.initialize = function initialize() {
                     }
                 } else if (k == 87) { // w
                     hardDrop(active);
-                    GAME.newblocktimer = 9000;
+                    GAME.newblocktimer = GAME.pulse  * GAME.height - 1000;
                 } else if (k == 81) { // q
                     rotateCounterClockwise(active);
                 } else if (k == 69) { // e
@@ -319,20 +321,20 @@ GAME.initialize = function initialize() {
                 if (GAME.particle_timers[i] < 3000) {
                     var p = GAME.particles[i];
                     if (GAME.sweeptimer < GAME.sweeptime) {
-                        smoke.setCenter({
+                        fire.setCenter({
                             x: (GAME.sweeptimer / GAME.sweeptime) * GAME.blocksize * GAME.width,
                             y: GAME.blocksize / 2 + p * GAME.blocksize
                         });
-                        smoke.create();
-                        smoke.create();
-                        smoke.create();
-                        smoke.create();
+                        fire.create();
+                        fire.create();
+                        fire.create();
+                        fire.create();
                     }
                 }
             }
-            smoke.update(delta / 1000);
-            smoke.render();
-            if (smoke.isEmpty()) {
+            fire.update(delta / 1000);
+            fire.render();
+            if (fire.isEmpty()) {
                 GAME.sweeptimer = 0;
                 GAME.particles = [];
                 GAME.particle_timers = [];
