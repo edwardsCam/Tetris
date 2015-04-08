@@ -95,13 +95,17 @@ GAME.initialize = function initialize() {
         }
     });
 
+    GAME.context.font = "20px Georgia";
+
     GAME.currtime = performance.now();
     GAME.falltimer = 0;
-    GAME.newblocktimer = 5000;
+    GAME.newblocktimer = 7500;
     GAME.sweeptimer = 0;
     GAME.sweeptime = 400;
 
     (function setVariables() {
+        GAME.level = 1;
+        GAME.lines_cleared = 0;
         GAME.score = 0;
         GAME.currentKey = 0;
         GAME.keyIsPressed = false;
@@ -195,9 +199,13 @@ GAME.initialize = function initialize() {
             if (active) {
                 removeBlockFromGrid(active);
                 if (k == 65) { // a
-                    move(active, -1);
+                    if (canMoveHoriz(active, -1)) {
+                        move(active, -1);
+                    }
                 } else if (k == 68) { // d
-                    move(active, 1);
+                    if (canMoveHoriz(active, 1)) {
+                        move(active, 1);
+                    }
                 } else if (k == 83) { // s
                     if (canMoveDown(active)) {
                         moveDown(active, 1);
@@ -225,20 +233,47 @@ GAME.initialize = function initialize() {
     }
 
     function Render(delta) {
-        var color;
         GAME.graphics.clear();
+        drawBoard();
+        drawPending();
+        drawParticles(delta);
+        drawScore();
+    }
+
+    function drawBoard() {
         for (var i = 0; i < GAME.width; i++) {
             for (var j = 0; j < GAME.height; j++) {
                 GAME.context.fillStyle = getColor(GAME.grid[i][j]);
                 GAME.context.fillRect(i * GAME.blocksize, j * GAME.blocksize, GAME.blocksize, GAME.blocksize);
             }
         }
+    }
 
-        if (GAME.pending_block != null) {
-            var minx = 5;
-            var miny = 5;
+    function drawPending() {
+        var basex = GAME.blocksize * GAME.width + GAME.blocksize * 2;
+        var basey = GAME.blocksize * 2;
+        GAME.context.fillStyle = getColor(0);
+        GAME.context.fillText("Next block:", basex, GAME.blocksize * 1.5);
+        var temp = [{
+            x: 0,
+            y: 0
+        }, {
+            x: 0,
+            y: 0
+        }, {
+            x: 0,
+            y: 0
+        }, {
+            x: 0,
+            y: 0
+        }];
+        if (temp != null) {
+            var minx = 100;
+            var miny = 100;
             for (var i = 0; i < 4; i++) {
-                var b = GAME.pending_block.chunks[i];
+                temp[i].x = GAME.pending_block.chunks[i].x;
+                temp[i].y = GAME.pending_block.chunks[i].y;
+                var b = temp[i];
                 if (b.x < minx)
                     minx = b.x;
                 if (b.y < miny)
@@ -247,35 +282,36 @@ GAME.initialize = function initialize() {
             while (minx > 0) {
                 minx--;
                 for (var i = 0; i < 4; i++) {
-                    GAME.pending_block.chunks[i].x--;
+                    temp[i].x--;
                 }
             }
             while (minx < 0) {
                 minx++;
                 for (var i = 0; i < 4; i++) {
-                    GAME.pending_block.chunks[i].x++;
+                    temp[i].x++;
                 }
             }
             while (miny > 0) {
                 miny--;
                 for (var i = 0; i < 4; i++) {
-                    GAME.pending_block.chunks[i].y--;
+                    temp[i].y--;
                 }
             }
             while (miny < 0) {
                 miny++;
                 for (var i = 0; i < 4; i++) {
-                    GAME.pending_block.chunks[i].y++;
+                    temp[i].y++;
                 }
             }
             GAME.context.fillStyle = getColor(GAME.pending_block.color);
-            var basex = GAME.blocksize * GAME.width + GAME.blocksize * 2;
-            var basey = GAME.blocksize * 2;
             for (var i = 0; i < 4; i++) {
-                var b = GAME.pending_block.chunks[i];
+                var b = temp[i];
                 GAME.context.fillRect(basex + b.x * GAME.blocksize, basey + b.y * GAME.blocksize, GAME.blocksize, GAME.blocksize);
             }
         }
+    }
+
+    function drawParticles(delta) {
         if (GAME.particles.length > 0) {
             GAME.sweeptimer += delta;
             for (var i = 0; i < GAME.particles.length; i++) {
@@ -298,6 +334,14 @@ GAME.initialize = function initialize() {
                 GAME.particles = [];
             }
         }
+    }
+
+    function drawScore() {
+        var basex = GAME.blocksize * GAME.width + GAME.blocksize * 2;
+        var basey = GAME.blocksize * 6;
+        GAME.context.fillStyle = getColor(0);
+        GAME.context.fillText("Rows cleared: " + GAME.lines_cleared, basex, basey);
+        GAME.context.fillText("Score: " + GAME.score, basex, basey + 30);
     }
 
     function getColor(b) {
@@ -362,6 +406,7 @@ GAME.initialize = function initialize() {
 
     function checkForClears() {
         var rows = [];
+        var clearcount = 0;
         for (var i = GAME.height - 1; i >= 0; i--) {
             var hasBlock = false;
             var blockCount = 0;
@@ -376,25 +421,45 @@ GAME.initialize = function initialize() {
             }
             if (blockCount == GAME.width) {
                 GAME.sweeptimer = 0;
-                rows[rows.length] = i;
-                GAME.score++;
+                rows[clearcount++] = i;
+                GAME.lines_cleared++;
             }
         }
-        for (var i = 0; i < rows.length; i++) {
-            clearRow(rows[i]);
+
+        if (clearcount > 0) {
+            var add = 0;
+            switch (clearcount) {
+                case 1:
+                    add = 40 * GAME.level;
+                    break;
+                case 2:
+                    add = 100 * GAME.level;
+                    break;
+                case 3:
+                    add = 300 * GAME.level;
+                    break;
+                case 4:
+                    add = 1200 * GAME.level;
+                    break;
+            }
+            GAME.score += add;
+            for (var i = 0; i < clearcount; i++) {
+                clearRow(rows[i] + i);
+                GAME.particles[GAME.particles.length] = rows[i];
+            }
         }
     }
 
     function clearRow(r) {
-        GAME.particles[GAME.particles.length] = r;
         for (var i = 0; i < GAME.width; i++) {
             GAME.ground[i][r] = 0;
             GAME.grid[i][r] = 0;
         }
-        dropGround(r);
+        dropGround(r - 1);
     }
 
     function dropGround(r) {
+        var hit = false;
         for (var y = r; y >= 0; y--) {
             for (var x = 0; x < GAME.width; x++) {
                 if (GAME.ground[x][y] == 1) {
@@ -404,7 +469,10 @@ GAME.initialize = function initialize() {
                     }
                     GAME.grid[x][y] = 0;
                     GAME.ground[x][y] = 0;
-                    y++;
+                    if (!hit) {
+                        y++;
+                        hit = true;
+                    }
                 }
             }
         }
