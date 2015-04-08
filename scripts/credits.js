@@ -17,8 +17,6 @@ var all_colors = [{
 
 (function() {
 
-    ctx.font = '15px sans-serif';
-
     // mouse event variables
     var mousePosition = {
         x: 0,
@@ -45,6 +43,12 @@ var all_colors = [{
     canvas.addEventListener('mouseup', function(event) {
         mousePressed = false;
     });
+
+    function drawText() {
+        ctx.font = '30px sans-serif';
+        ctx.fillText("Created by Cameron Edwards", canvas.width / 2 - 180, 50);
+        ctx.fillText("for CS5410, Spring 2015", canvas.width / 2 - 140, 90);
+    }
 
     /**
      * A button with hover and active states.
@@ -110,6 +114,7 @@ var all_colors = [{
         this.draw = function() {
             ctx.save();
 
+ctx.font = '15px sans-serif';
             var colors = this.colors[this.state];
             var halfH = this.height / 2;
 
@@ -149,6 +154,8 @@ var all_colors = [{
         requestAnimationFrame(animate);
         backButton.update();
         backButton.draw();
+
+        drawText();
     }
 
     requestAnimationFrame(animate);

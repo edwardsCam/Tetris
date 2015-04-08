@@ -80,7 +80,7 @@ GAME.initialize = function initialize() {
     'use strict';
 
     var smoke = GAME.particleSystem({
-        image: GAME.images['img/fire.png'],
+        image: GAME.images['img/smoke.png'],
         center: {
             x: 0,
             y: 0
@@ -112,6 +112,7 @@ GAME.initialize = function initialize() {
         GAME.changed_flag = false;
         GAME.pending_block = null;
         GAME.particles = [];
+        GAME.particle_timers = [];
         GAME.blocks = [];
         GAME.ground = [];
         GAME.grid = [];
@@ -267,64 +268,66 @@ GAME.initialize = function initialize() {
             x: 0,
             y: 0
         }];
-        if (temp != null) {
-            var minx = 100;
-            var miny = 100;
+        var minx = 100;
+        var miny = 100;
+        for (var i = 0; i < 4; i++) {
+            temp[i].x = GAME.pending_block.chunks[i].x;
+            temp[i].y = GAME.pending_block.chunks[i].y;
+            var b = temp[i];
+            if (b.x < minx)
+                minx = b.x;
+            if (b.y < miny)
+                miny = b.y;
+        }
+        while (minx > 0) {
+            minx--;
             for (var i = 0; i < 4; i++) {
-                temp[i].x = GAME.pending_block.chunks[i].x;
-                temp[i].y = GAME.pending_block.chunks[i].y;
-                var b = temp[i];
-                if (b.x < minx)
-                    minx = b.x;
-                if (b.y < miny)
-                    miny = b.y;
-            }
-            while (minx > 0) {
-                minx--;
-                for (var i = 0; i < 4; i++) {
-                    temp[i].x--;
-                }
-            }
-            while (minx < 0) {
-                minx++;
-                for (var i = 0; i < 4; i++) {
-                    temp[i].x++;
-                }
-            }
-            while (miny > 0) {
-                miny--;
-                for (var i = 0; i < 4; i++) {
-                    temp[i].y--;
-                }
-            }
-            while (miny < 0) {
-                miny++;
-                for (var i = 0; i < 4; i++) {
-                    temp[i].y++;
-                }
-            }
-            GAME.context.fillStyle = getColor(GAME.pending_block.color);
-            for (var i = 0; i < 4; i++) {
-                var b = temp[i];
-                GAME.context.fillRect(basex + b.x * GAME.blocksize, basey + b.y * GAME.blocksize, GAME.blocksize, GAME.blocksize);
+                temp[i].x--;
             }
         }
+        while (minx < 0) {
+            minx++;
+            for (var i = 0; i < 4; i++) {
+                temp[i].x++;
+            }
+        }
+        while (miny > 0) {
+            miny--;
+            for (var i = 0; i < 4; i++) {
+                temp[i].y--;
+            }
+        }
+        while (miny < 0) {
+            miny++;
+            for (var i = 0; i < 4; i++) {
+                temp[i].y++;
+            }
+        }
+        GAME.context.fillStyle = getColor(GAME.pending_block.color);
+        for (var i = 0; i < 4; i++) {
+            var b = temp[i];
+            GAME.context.fillRect(basex + b.x * GAME.blocksize, basey + b.y * GAME.blocksize, GAME.blocksize, GAME.blocksize);
+        }
+
     }
 
     function drawParticles(delta) {
         if (GAME.particles.length > 0) {
             GAME.sweeptimer += delta;
             for (var i = 0; i < GAME.particles.length; i++) {
-                var p = GAME.particles[i];
-                if (GAME.sweeptimer < GAME.sweeptime) {
-                    smoke.setCenter({
-                        x: (GAME.sweeptimer / GAME.sweeptime) * GAME.blocksize * GAME.width,
-                        y: GAME.blocksize / 2 + p * GAME.blocksize
-                    });
-                    smoke.create();
-                    smoke.create();
-                    smoke.create();
-                    smoke.create();
+                GAME.particle_timers[i] += delta;
+                if (GAME.particle_timers[i] < 3000) {
+                    var p = GAME.particles[i];
+                    if (GAME.sweeptimer < GAME.sweeptime) {
+                        smoke.setCenter({
+                            x: (GAME.sweeptimer / GAME.sweeptime) * GAME.blocksize * GAME.width,
+                            y: GAME.blocksize / 2 + p * GAME.blocksize
+                        });
+                        smoke.create();
+                        smoke.create();
+                        smoke.create();
+                        smoke.create();
+                    }
                 }
             }
             smoke.update(delta / 1000);
@@ -332,6 +335,7 @@ GAME.initialize = function initialize() {
             if (smoke.isEmpty()) {
                 GAME.sweeptimer = 0;
                 GAME.particles = [];
+                GAME.particle_timers = [];
             }
         }
     }
@@ -446,6 +450,7 @@ GAME.initialize = function initialize() {
             for (var i = 0; i < clearcount; i++) {
                 clearRow(rows[i] + i);
                 GAME.particles[GAME.particles.length] = rows[i];
+                GAME.particle_timers[GAME.particle_timers.length] = 0;
             }
         }
     }
