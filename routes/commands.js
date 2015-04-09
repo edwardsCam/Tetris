@@ -16,6 +16,9 @@ var controls = [ {
 	}, {
 		name : 'hard',
 		key : 87
+	},{
+		name : 'pause',
+		key : 80
 	}];
 
 //------------------------------------------------------------------
@@ -53,7 +56,7 @@ exports.put = function(request, response) {
 	console.log('Name: ' + request.query.name);
 	console.log('key: ' + request.query.key);
 	
-	for (var i = 0; i < 6; i++) {
+	for (var i = 0; i < 7; i++) {
 		if (controls[i].name == request.query.name) {
 			controls[i].key = request.query.key;
 			break;

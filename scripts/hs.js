@@ -167,7 +167,7 @@ function showScores() {
 
             // text
             var size = ctx.measureText(this.text);
-            var x = this.x + (this.width - size.width) / 2;
+            var x = this.x + (this.width - size.width/2) / 2;
             var y = this.y + (this.height - 15) / 2 + 12;
 
             ctx.fillStyle = '#FFF';

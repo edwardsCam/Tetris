@@ -2,7 +2,7 @@ function addControl() {
 
     var name, key;
 
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 7; i++) {
         switch (i) {
             case 0:
                 name = "left";
@@ -27,6 +27,10 @@ function addControl() {
             case 5:
                 name = "hard";
                 key = document.getElementById("id-harddrop").value.charCodeAt(0) - 32;
+                break;
+            case 6:
+                name = "pause";
+                key = document.getElementById("id-pause").value.charCodeAt(0) - 32;
                 break;
         }
         $.ajax({
@@ -72,6 +76,9 @@ function showControls() {
                         break;
                     case 5:
                         elem = document.getElementById("id-harddrop");
+                        break;
+                    case 6:
+                        elem = document.getElementById("id-pause");
                         break;
                 }
                 elem.value = String.fromCharCode(32 + parseInt(data[value].key));
@@ -202,7 +209,7 @@ var all_colors = [{
 
             // text
             var size = ctx.measureText(this.text);
-            var x = this.x + (this.width - size.width) / 2;
+            var x = this.x + (this.width - size.width / 2) / 2;
             var y = this.y + (this.height - 15) / 2 + 12;
 
             ctx.fillStyle = '#FFF';
@@ -222,25 +229,43 @@ var all_colors = [{
         'active': all_colors[2]
     };
 
-    var saveButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 100, bw, 50, 'Save', default_colors,
+    var saveButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 70, bw, bh, 'Save', default_colors,
             function() {
                 addControl();
+                ctx.font = '15px sans-serif';
+                ctx.fillText("Controls saved!", canvas.width / 2 - 40, canvas.height / 2 + 150);
             }),
-        backButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 25, bw, 50, 'Exit', default_colors,
+        backButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 + 5, bw, bh, 'Exit', default_colors,
             function() {
                 document.location.href = "../";
+            }),
+        resetButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 + 80, bw, bh, 'Reset to Defaults', default_colors,
+            function() {
+                document.getElementById("id-left").value = 'a';
+                document.getElementById("id-right").value = 'd';
+                document.getElementById("id-counterclockwise").value = 'q';
+                document.getElementById("id-clockwise").value = 'e';
+                document.getElementById("id-softdrop").value = 's';
+                document.getElementById("id-harddrop").value = 'w';
+                document.getElementById("id-pause").value = 'p';
+                addControl();
+                ctx.font = '15px sans-serif';
+                ctx.fillText("Controls saved!", canvas.width / 2 - 40, canvas.height / 2 + 150);
             });
 
     function animate() {
         requestAnimationFrame(animate);
 
         ctx.font = '30px sans-serif';
-        ctx.fillText("Controls", canvas.width / 2 - 50, 50);
+        ctx.fillText("Controls", canvas.width / 2 - 55, 50);
         backButton.update();
         backButton.draw();
 
         saveButton.update();
         saveButton.draw();
+
+        resetButton.update();
+        resetButton.draw();
     }
 
     requestAnimationFrame(animate);

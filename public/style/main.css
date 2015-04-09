@@ -6,6 +6,14 @@ ul {
   list-style-type: none;
 }
 
+.inp-field-right {
+	text-align:right;
+}
+
+.inp-field-left {
+	text-align:left;
+}
+
 .main-div {
   text-align:center;
 }

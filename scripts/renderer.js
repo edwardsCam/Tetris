@@ -159,7 +159,7 @@ GAME.initialize = function initialize() {
          */
         this.draw = function() {
             GAME.context.save();
-
+            GAME.context.font = '15px sans-serif';
             var colors = this.colors[this.state];
             var halfH = this.height / 2;
 
@@ -171,10 +171,11 @@ GAME.initialize = function initialize() {
 
             // text
             var size = GAME.context.measureText(this.text);
-            var x = this.x + (this.width - size.width) / 2;
+            var x = this.x + (this.width - size.width / 2) / 2;
             var y = this.y + (this.height - 15) / 2 + 12;
 
             GAME.context.fillStyle = '#FFF';
+
             GAME.context.fillText(this.text, x, y);
 
             GAME.context.restore();
@@ -190,7 +191,7 @@ GAME.initialize = function initialize() {
         'active': all_colors[2]
     };
 
-    GAME.saveButton = new Button(GAME.blocksize * GAME.width + 50, GAME.canvas.height / 2 + 100, bw, bh, 'Back', default_colors,
+    GAME.backButton = new Button(GAME.blocksize * GAME.width + 50, GAME.canvas.height / 2 + 100, bw, bh, 'Back', default_colors,
         function() {
             document.location.href = "../";
         });
@@ -204,7 +205,7 @@ GAME.initialize = function initialize() {
             alert('GET failed');
         },
         success: function(data) {
-            for (var i = 0; i < 6; i++) {
+            for (var i = 0; i < 7; i++) {
                 GAME.controls[data[i].name] = data[i].key;
             }
         }
@@ -226,14 +227,15 @@ GAME.initialize = function initialize() {
         }
     });
 
-    GAME.context.font = "20px Georgia";
-
     GAME.currtime = performance.now();
     GAME.falltimer = 0;
     GAME.sweeptimer = 0;
     GAME.sweeptime = 400;
 
     (function setVariables() {
+        GAME.over = false;
+        GAME.drewNameInput = false;
+        GAME.paused = false;
         GAME.controls = [];
         GAME.pulse = 400;
         GAME.newblocktime = GAME.pulse * GAME.height;
@@ -241,6 +243,7 @@ GAME.initialize = function initialize() {
         GAME.level = 1;
         GAME.lines_cleared = 0;
         GAME.score = 0;
+        GAME.level_threshold = 5;
         GAME.currentKey = 0;
         GAME.keyIsPressed = false;
         GAME.changed_flag = false;
@@ -278,8 +281,10 @@ GAME.initialize = function initialize() {
 
         var delta = performance.now() - GAME.currtime;
 
-        GatherInput();
-        UpdateGameLogic(delta);
+        if (!GAME.over) {
+            GatherInput();
+            UpdateGameLogic(delta);
+        }
         Render(delta);
 
         requestAnimationFrame(gameLoop);
@@ -302,79 +307,119 @@ GAME.initialize = function initialize() {
     }
 
     function UpdateGameLogic(delta) {
+
         GAME.currtime += delta;
-        GAME.falltimer += delta;
-        GAME.newblocktimer += delta;
+        if (!GAME.paused) {
+            if (GAME.lines_cleared >= GAME.level_threshold) {
+                GAME.lines_cleared -= GAME.level_threshold;
+                GAME.level++;
+                GAME.pulse -= 50;
+                if (GAME.pulse < 150) {
+                    GAME.pulse = 150;
+                }
+                GAME.newblocktime = GAME.pulse * GAME.height;
+                GAME.newblocktimer = GAME.newblocktime - 2000;
+            }
 
-        if (GAME.falltimer > GAME.pulse) {
-            GAME.falltimer -= GAME.pulse;
-            for (var i = 0; i < GAME.blocks.length; i++) {
-                if (!fall(GAME.blocks[i])) {
-                    addToGround(i--);
-                    GAME.newblocktimer = GAME.newblocktime;
+            GAME.falltimer += delta;
+            GAME.newblocktimer += delta;
+
+            if (GAME.falltimer > GAME.pulse) {
+                GAME.falltimer -= GAME.pulse;
+                for (var i = 0; i < GAME.blocks.length; i++) {
+                    if (!fall(GAME.blocks[i])) {
+                        addToGround(i--);
+                        GAME.newblocktimer = GAME.newblocktime;
+                    }
                 }
             }
-        }
 
-
-        if (GAME.newblocktimer > GAME.newblocktime) {
-            GAME.newblocktimer -= GAME.newblocktime;
-            var l = GAME.blocks.length;
-            GAME.activeBlock = l;
-            moveIntoBoundsVert(GAME.pending_block);
-            GAME.blocks[l] = GAME.pending_block;
-            placeBlockOnGrid(GAME.pending_block);
-            makeNewBlock();
-        }
-
-
-        var k = GAME.currentKey;
-        if (k != 0) {
-            var active = GAME.blocks[GAME.activeBlock];
-            if (active) {
-                removeBlockFromGrid(active);
-                if (k == GAME.controls['left']) {
-                    if (canMoveHoriz(active, -1)) {
-                        move(active, -1);
-                    }
-                } else if (k == GAME.controls['right']) {
-                    if (canMoveHoriz(active, 1)) {
-                        move(active, 1);
-                    }
-                } else if (k == GAME.controls['soft']) {
-                    if (canMoveDown(active)) {
-                        moveDown(active, 1);
-                        GAME.falltimer = 0;
-                    }
-                } else if (k == GAME.controls['hard']) {
-                    hardDrop(active);
-                    GAME.newblocktimer = GAME.pulse * GAME.height - 1000;
-                } else if (k == GAME.controls['counterclock']) {
-                    rotateCounterClockwise(active);
-                } else if (k == GAME.controls['clock']) {
-                    rotateClockwise(active);
-                }
-                placeBlockOnGrid(active);
-                GAME.changed_flag = true;
+            if (GAME.newblocktimer > GAME.newblocktime) {
+                GAME.newblocktimer -= GAME.newblocktime;
+                var l = GAME.blocks.length;
+                GAME.activeBlock = l;
+                moveIntoBoundsVert(GAME.pending_block);
+                GAME.blocks[l] = GAME.pending_block;
+                placeBlockOnGrid(GAME.pending_block);
+                makeNewBlock();
             }
-        }
 
-        if (GAME.changed_flag) {
-            GAME.currentKey = 0;
-            GAME.changed_flag = false;
+        } else if (GAME.currentKey == GAME.controls['pause'] && !GAME.changed_flag) {
+            GAME.paused = !GAME.paused;
+            GAME.changed_flag = true;
         }
+        if (!GAME.paused) {
+            var k = GAME.currentKey;
+            if (k != 0) {
+                var active = GAME.blocks[GAME.activeBlock];
+                if (active) {
+                    removeBlockFromGrid(active);
+                    if (k == GAME.controls['pause'] && !GAME.changed_flag) {
+                        GAME.paused = !GAME.paused;
+                    } else if (k == GAME.controls['left']) {
+                        if (canMoveHoriz(active, -1)) {
+                            move(active, -1);
+                        }
+                    } else if (k == GAME.controls['right']) {
+                        if (canMoveHoriz(active, 1)) {
+                            move(active, 1);
+                        }
+                    } else if (k == GAME.controls['soft']) {
+                        if (canMoveDown(active)) {
+                            moveDown(active, 1);
+                            GAME.falltimer = 0;
+                        }
+                    } else if (k == GAME.controls['hard']) {
+                        hardDrop(active);
+                        GAME.newblocktimer = GAME.pulse * GAME.height - 1000;
+                    } else if (k == GAME.controls['counterclock']) {
+                        rotateCounterClockwise(active);
+                    } else if (k == GAME.controls['clock']) {
+                        rotateClockwise(active);
+                    }
+                    placeBlockOnGrid(active);
+                    GAME.changed_flag = true;
+                }
+            }
 
-        checkForClears();
+            if (GAME.changed_flag) {
+                GAME.currentKey = 0;
+                GAME.changed_flag = false;
+            }
+
+            checkForClears();
+        }
     }
 
     function Render(delta) {
         GAME.graphics.clear();
-        GAME.saveButton.update();
-        GAME.saveButton.draw();
+        GAME.backButton.update();
+        GAME.backButton.draw();
         drawBoard();
         drawPending();
         drawParticles(delta);
         drawScore();
+        if (GAME.over) {
+            GAME.context.fillStyle = "rgb(150, 150, 150)";
+            GAME.context.fillRect(0, GAME.canvas.height / 2 - GAME.canvas.height / 4, GAME.canvas.width, GAME.canvas.height / 2);
+            GAME.context.fillStyle = "rgb(200, 0, 0)";
+            GAME.context.font = '70px sans-serif';
+            GAME.context.fillText("GAME OVER", GAME.canvas.width / 2 - 160, GAME.canvas.height / 2);
+            if (!GAME.drewNameInput) {
+                var div = document.getElementById("id-name-input-div");
+                var str = '<span class="inp-field-left" style="position:absolute;left:300px;top:225px;width:1000px;">';
+                str += 'Name: ';
+                str += '<input type="text" id="id-name-input"/>';
+                str += '<input type="submit" value="Submit" onClick="GAME.submitHighScore();"/>';
+                str += '</span>';
+                div.innerHTML = str;
+                GAME.drewNameInput = true;
+            }
+        } else if (GAME.paused) {
+            GAME.context.fillStyle = "rgb(200, 0, 0)";
+            GAME.context.font = '70px sans-serif';
+            GAME.context.fillText("Paused", GAME.canvas.width / 2 - 90, GAME.canvas.height / 2);
+        }
     }
 
     function drawBoard() {
@@ -390,6 +435,7 @@ GAME.initialize = function initialize() {
         var basex = GAME.blocksize * GAME.width + GAME.blocksize * 2;
         var basey = GAME.blocksize * 2;
         GAME.context.fillStyle = getColor(0);
+        GAME.context.font = '15px sans-serif';
         GAME.context.fillText("Next block:", basex, GAME.blocksize * 1.5);
         var temp = [{
             x: 0,
@@ -478,10 +524,12 @@ GAME.initialize = function initialize() {
 
     function drawScore() {
         var basex = GAME.blocksize * GAME.width + GAME.blocksize * 2;
-        var basey = GAME.blocksize * 6;
+        var basey = GAME.blocksize * 7;
+        GAME.context.font = '15px sans-serif';
         GAME.context.fillStyle = getColor(0);
-        GAME.context.fillText("Rows cleared: " + GAME.lines_cleared, basex, basey);
-        GAME.context.fillText("Score: " + GAME.score, basex, basey + 30);
+        GAME.context.fillText("Level: " + GAME.level, basex, basey);
+        GAME.context.fillText("Rows cleared: " + GAME.lines_cleared, basex, basey + 30);
+        GAME.context.fillText("Score: " + GAME.score, basex, basey + 60);
     }
 
     function getColor(b) {
@@ -510,27 +558,69 @@ GAME.initialize = function initialize() {
         moveIntoBoundsHoriz(block);
         moveIntoBoundsVert(block);
         var temp = [];
+        var hit = false;
         for (var i = 0; i < 4; i++) {
             if (block.chunks[i].y == 0) {
                 temp[temp.length] = block.chunks[i];
+                if (GAME.grid[block.chunks[i].x][block.chunks[i].y] != 0) {
+                    hit = true;
+                }
             }
         }
         var trycount = 0;
         var can_make = true;
-        for (var i = 0; i < temp.length; i++) {
-            if (GAME.grid[temp[i].x][temp[i].y] != 0) {
-                move(block, (random(2) - 1 == 0 ? 1 : -1));
-                i = -1;
-                if (trycount++ > GAME.width) {
-                    can_make = false;
+        var dir = ((random(2) - 1 == 0) ? 1 : -1);
+        if (hit) {
+            for (var t = 0; t < GAME.width; t++) {
+                for (var i = 0; i < temp.length; i++) {
+                    if (GAME.grid[temp[i].x][temp[i].y] != 0) {
+                        for (var j = 0; j < 4; j++) {
+                            block.chunks[j].x++;
+                            if (block.chunks[j].x >= GAME.width) {
+                                for (var k = j; k >= 0; k--) {
+                                    block.chunks[k].x--;
+                                }
+                                for (var k = 0; k < 4; k++) {
+                                    block.chunks[k].x -= GAME.width;
+                                }
+                                moveIntoBoundsHoriz(block);
+                                j = 4;
+                            }
+                        }
+                        trycount++;
+                        i = temp.length;
+                        if (trycount >= GAME.width - 1) {
+                            can_make = false;
+                        }
+                    }
                 }
             }
         }
         if (can_make) {
             GAME.pending_block = block;
         } else {
-            // YOU LOSE!!
+            GAME.over = true;
         }
+    }
+
+    GAME.submitHighScore = function() {
+        var name = document.getElementById("id-name-input").value;
+        if (name == "") {
+            name = "Anonymous";
+        }
+        var score = GAME.score;
+        console.log("Submitting score");
+        $.ajax({
+            url: 'http://localhost:3000/v1/high-scores?name=' + name + '&score=' + score,
+            type: 'POST',
+            error: function() {
+                alert('POST failed');
+            },
+            success: function() {
+                document.location.href = "../";
+            }
+        });
+
 
     }
 
