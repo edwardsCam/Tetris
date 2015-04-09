@@ -9,9 +9,9 @@
 GAME.graphics = (function() {
     'use strict';
 
-    var canvas = document.getElementById('canvas-main');
-    GAME.context = canvas.getContext('2d');
-    GAME.blocksize = canvas.width / (Math.min(GAME.width, GAME.height) * 2);
+    GAME.canvas = document.getElementById('canvas-main');
+    GAME.context = GAME.canvas.getContext('2d');
+    GAME.blocksize = GAME.canvas.width / (Math.min(GAME.width, GAME.height) * 2);
 
     //------------------------------------------------------------------
     //
@@ -22,7 +22,7 @@ GAME.graphics = (function() {
     CanvasRenderingContext2D.prototype.clear = function() {
         this.save();
         this.setTransform(1, 0, 0, 1, 0, 0);
-        this.clearRect(0, 0, canvas.width, canvas.height);
+        this.clearRect(0, 0, GAME.canvas.width, GAME.canvas.height);
         this.restore();
     };
 
@@ -79,6 +79,137 @@ GAME.graphics = (function() {
 GAME.initialize = function initialize() {
     'use strict';
 
+    var all_colors = [{
+        top: '#1879BD',
+        bottom: '#084D79'
+    }, {
+        top: '#678834',
+        bottom: '#093905'
+    }, {
+        top: '#EB7723',
+        bottom: '#A80000'
+    }];
+
+
+    var mousePosition = {
+        x: 0,
+        y: 0
+    };
+    var mousePressed = false;
+
+    /**
+     * Track the user's mouse position on mouse move.
+     * @param {Event} event
+     */
+    GAME.canvas.addEventListener('mousemove', function(event) {
+        mousePosition.x = event.offsetX || event.layerX;
+        mousePosition.y = event.offsetY || event.layerY;
+    });
+
+    /**
+     * Track the user's clicks.
+     * @param {Event} event
+     */
+    GAME.canvas.addEventListener('mousedown', function(event) {
+        mousePressed = true;
+    });
+    GAME.canvas.addEventListener('mouseup', function(event) {
+        mousePressed = false;
+    });
+
+
+
+    function Button(x, y, w, h, text, colors, action) {
+        this.x = x;
+        this.y = y;
+        this.width = w;
+        this.height = h;
+        this.colors = colors;
+        this.text = text;
+
+        this.state = 'default'; // current button state
+
+        var isClicking = false;
+
+        /**
+         * Check to see if the user is hovering over or clicking on the button.
+         */
+        this.update = function() {
+            // check for hover
+            if (mousePosition.x >= this.x && mousePosition.x <= this.x + this.width && mousePosition.y >= this.y && mousePosition.y <= this.y + this.height) {
+                this.state = 'hover';
+
+                // check for click
+                if (mousePressed) {
+                    this.state = "active";
+                    isClicking = true;
+                } else {
+                    if (isClicking) {
+                        action();
+                    }
+                    isClicking = false;
+                }
+            } else {
+                this.state = 'default';
+            }
+        };
+
+        /**
+         * Draw the button.
+         */
+        this.draw = function() {
+            GAME.context.save();
+
+            var colors = this.colors[this.state];
+            var halfH = this.height / 2;
+
+            // button
+            GAME.context.fillStyle = colors.top;
+            GAME.context.fillRect(this.x, this.y, this.width, halfH);
+            GAME.context.fillStyle = colors.bottom;
+            GAME.context.fillRect(this.x, this.y + halfH, this.width, halfH);
+
+            // text
+            var size = GAME.context.measureText(this.text);
+            var x = this.x + (this.width - size.width) / 2;
+            var y = this.y + (this.height - 15) / 2 + 12;
+
+            GAME.context.fillStyle = '#FFF';
+            GAME.context.fillText(this.text, x, y);
+
+            GAME.context.restore();
+        };
+    }
+
+    var bw = 200,
+        bh = 50;
+
+    var default_colors = {
+        'default': all_colors[0],
+        'hover': all_colors[1],
+        'active': all_colors[2]
+    };
+
+    GAME.saveButton = new Button(GAME.blocksize * GAME.width + 50, GAME.canvas.height / 2 + 100, bw, bh, 'Back', default_colors,
+        function() {
+            document.location.href = "../";
+        });
+
+
+    $.ajax({
+        url: 'http://localhost:3000/v1/controls',
+        cache: false,
+        type: 'GET',
+        error: function() {
+            alert('GET failed');
+        },
+        success: function(data) {
+            for (var i = 0; i < 6; i++) {
+                GAME.controls[data[i].name] = data[i].key;
+            }
+        }
+    });
+
     var fire = GAME.particleSystem({
         image: GAME.images['img/fire.png'],
         center: {
@@ -103,6 +234,7 @@ GAME.initialize = function initialize() {
     GAME.sweeptime = 400;
 
     (function setVariables() {
+        GAME.controls = [];
         GAME.pulse = 400;
         GAME.newblocktime = GAME.pulse * GAME.height;
         GAME.newblocktimer = GAME.newblocktime - 2000;
@@ -201,25 +333,25 @@ GAME.initialize = function initialize() {
             var active = GAME.blocks[GAME.activeBlock];
             if (active) {
                 removeBlockFromGrid(active);
-                if (k == 65) { // a
+                if (k == GAME.controls['left']) {
                     if (canMoveHoriz(active, -1)) {
                         move(active, -1);
                     }
-                } else if (k == 68) { // d
+                } else if (k == GAME.controls['right']) {
                     if (canMoveHoriz(active, 1)) {
                         move(active, 1);
                     }
-                } else if (k == 83) { // s
+                } else if (k == GAME.controls['soft']) {
                     if (canMoveDown(active)) {
                         moveDown(active, 1);
                         GAME.falltimer = 0;
                     }
-                } else if (k == 87) { // w
+                } else if (k == GAME.controls['hard']) {
                     hardDrop(active);
-                    GAME.newblocktimer = GAME.pulse  * GAME.height - 1000;
-                } else if (k == 81) { // q
+                    GAME.newblocktimer = GAME.pulse * GAME.height - 1000;
+                } else if (k == GAME.controls['counterclock']) {
                     rotateCounterClockwise(active);
-                } else if (k == 69) { // e
+                } else if (k == GAME.controls['clock']) {
                     rotateClockwise(active);
                 }
                 placeBlockOnGrid(active);
@@ -237,6 +369,8 @@ GAME.initialize = function initialize() {
 
     function Render(delta) {
         GAME.graphics.clear();
+        GAME.saveButton.update();
+        GAME.saveButton.draw();
         drawBoard();
         drawPending();
         drawParticles(delta);

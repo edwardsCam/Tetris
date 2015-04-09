@@ -147,7 +147,7 @@ ctx.font = '15px sans-serif';
 
     var backButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 25, bw, 50, 'Back', default_colors,
             function() {
-                document.location.href = "index.html";
+                document.location.href = "../";
             });
 
     function animate() {

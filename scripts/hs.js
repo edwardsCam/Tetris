@@ -14,10 +14,56 @@ var all_colors = [{
     bottom: '#A80000'
 }];
 
+//------------------------------------------------------------------
+//
+// Make a request to the server to add a new score.
+//
+//------------------------------------------------------------------
+function addScore() {
+    var name = $('#id-playerName').val(),
+        score = $('#id-playerScore').val();
+    
+    $.ajax({
+        url: 'http://localhost:3000/v1/high-scores?name=' + name + '&score=' + score,
+        type: 'POST',
+        error: function() { alert('POST failed'); },
+        success: function() {
+            showScores();
+        }
+    });
+}
+
+//------------------------------------------------------------------
+//
+// Make a request to the server to obtain the current set of high
+// scores and show them.
+//
+//------------------------------------------------------------------
+function showScores() {
+    $.ajax({
+        url: 'http://localhost:3000/v1/high-scores',
+        cache: false,
+        type: 'GET',
+        error: function() { alert('GET failed'); },
+        success: function(data) {
+            var list = $('#id-high-scores'),
+            value,
+            text;
+            
+            list.empty();
+            for (value = 0; value < data.length; value++) {
+                text = (data[value].name + ' : ' + data[value].score);
+                ctx.font = '15px sans-serif';
+                ctx.fillText(text, 100, (value+2) * 50);
+            }
+        }
+    });
+}
+
 
 (function() {
 
-    ctx.font = '15px sans-serif';
+    showScores();
 
     // mouse event variables
     var mousePosition = {
@@ -125,6 +171,7 @@ var all_colors = [{
             var y = this.y + (this.height - 15) / 2 + 12;
 
             ctx.fillStyle = '#FFF';
+            ctx.font = '15px sans-serif';
             ctx.fillText(this.text, x, y);
 
             ctx.restore();
@@ -142,11 +189,13 @@ var all_colors = [{
 
     var backButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 25, bw, 50, 'Back', default_colors,
             function() {
-                document.location.href = "index.html";
+                document.location.href = "../";
             });
 
     function animate() {
         requestAnimationFrame(animate);
+        ctx.font = '30px sans-serif';
+        ctx.fillText("High Scores", canvas.width/2 - 70, 50);
         backButton.update();
         backButton.draw();
     }

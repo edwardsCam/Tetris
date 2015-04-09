@@ -1,16 +1,5 @@
-// Derived from sample code taken from http://blog.sklambert.com/html5-game-tutorial-game-ui-canvas-vs-dom/
-
 var canvas = document.getElementById('canvas-menu'),
     ctx = canvas.getContext('2d');
-
-var CONTROLS = {
-    "left" : 65,
-    "right" : 68,
-    "counter" : 81,
-    "clock" : 69,
-    "soft" : 83,
-    "hard" : 87
-};
 
 window.onload = function() {
     var logo = new Image();

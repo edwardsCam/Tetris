@@ -1,4 +1,85 @@
-// Derived from sample code taken from http://blog.sklambert.com/html5-game-tutorial-game-ui-canvas-vs-dom/
+function addControl() {
+
+    var name, key;
+
+    for (var i = 0; i < 6; i++) {
+        switch (i) {
+            case 0:
+                name = "left";
+                key = document.getElementById("id-left").value.charCodeAt(0) - 32;
+                break;
+            case 1:
+                name = "right";
+                key = document.getElementById("id-right").value.charCodeAt(0) - 32;
+                break;
+            case 2:
+                name = "counterclock";
+                key = document.getElementById("id-counterclockwise").value.charCodeAt(0) - 32;
+                break;
+            case 3:
+                name = "clock";
+                key = document.getElementById("id-clockwise").value.charCodeAt(0) - 32;
+                break;
+            case 4:
+                name = "soft";
+                key = document.getElementById("id-softdrop").value.charCodeAt(0) - 32;
+                break;
+            case 5:
+                name = "hard";
+                key = document.getElementById("id-harddrop").value.charCodeAt(0) - 32;
+                break;
+        }
+        $.ajax({
+            url: 'http://localhost:3000/v1/controls?name=' + name + '&key=' + key,
+            type: 'PUT',
+            error: function() {
+                alert('PUT failed');
+            },
+            success: function() {
+                showControls();
+            }
+        });
+    }
+
+}
+
+function showControls() {
+    $.ajax({
+        url: 'http://localhost:3000/v1/controls',
+        cache: false,
+        type: 'GET',
+        error: function() {
+            alert('GET failed');
+        },
+        success: function(data) {
+            var elem;
+            for (var value = 0; value < data.length; value++) {
+                switch (value) {
+                    case 0:
+                        elem = document.getElementById("id-left");
+                        break;
+                    case 1:
+                        elem = document.getElementById("id-right");
+                        break;
+                    case 2:
+                        elem = document.getElementById("id-counterclockwise");
+                        break;
+                    case 3:
+                        elem = document.getElementById("id-clockwise");
+                        break;
+                    case 4:
+                        elem = document.getElementById("id-softdrop");
+                        break;
+                    case 5:
+                        elem = document.getElementById("id-harddrop");
+                        break;
+                }
+                elem.value = String.fromCharCode(32 + parseInt(data[value].key));
+            }
+        }
+    });
+}
+
 
 var canvas = document.getElementById('canvas-menu'),
     ctx = canvas.getContext('2d');
@@ -17,10 +98,7 @@ var all_colors = [{
 
 (function() {
 
-console.log(CONTROLS);
-  //  document.getElementById('left').value = CONTROLS["left"];
-
-    ctx.font = '15px sans-serif';
+    showControls();
 
     // mouse event variables
     var mousePosition = {
@@ -128,6 +206,7 @@ console.log(CONTROLS);
             var y = this.y + (this.height - 15) / 2 + 12;
 
             ctx.fillStyle = '#FFF';
+            ctx.font = '15px sans-serif';
             ctx.fillText(this.text, x, y);
 
             ctx.restore();
@@ -145,15 +224,18 @@ console.log(CONTROLS);
 
     var saveButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 100, bw, 50, 'Save', default_colors,
             function() {
-                //todo
+                addControl();
             }),
-    backButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 25, bw, 50, 'Exit', default_colors,
+        backButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 25, bw, 50, 'Exit', default_colors,
             function() {
-                document.location.href = "index.html";
+                document.location.href = "../";
             });
 
     function animate() {
         requestAnimationFrame(animate);
+
+        ctx.font = '30px sans-serif';
+        ctx.fillText("Controls", canvas.width / 2 - 50, 50);
         backButton.update();
         backButton.draw();
 
