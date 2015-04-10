@@ -33,10 +33,10 @@ function addControl() {
                 key = document.getElementById("id-pause").value;
                 break;
         }
-        if ( isNaN( parseInt(key) )) {
+        if (isNaN(parseInt(key))) {
             key = key.charCodeAt(0);
             if (key >= 97 && key <= 122) {
-                key -=32;
+                key -= 32;
             }
         }
         console.log(key);

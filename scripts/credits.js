@@ -1,5 +1,4 @@
 // Derived from sample code taken from http://blog.sklambert.com/html5-game-tutorial-game-ui-canvas-vs-dom/
-
 var canvas = document.getElementById('canvas-credits'),
     ctx = canvas.getContext('2d');
 
@@ -46,8 +45,11 @@ var all_colors = [{
 
     function drawText() {
         ctx.font = '30px sans-serif';
-        ctx.fillText("Created by Cameron Edwards", canvas.width / 2 - 180, 50);
-        ctx.fillText("for CS5410, Spring 2015", canvas.width / 2 - 140, 90);
+        ctx.fillText("Created by Cameron Edwards", canvas.width / 2 - 190, 50);
+        ctx.fillText("for CS5410, Spring 2015", canvas.width / 2 - 150, 90);
+        ctx.font = '20px sans-serif';
+        ctx.fillText("using Node.js, Modernizr, yepnope", canvas.width / 2 - 140, 160);
+        ctx.fillText("and sample code from class.", canvas.width / 2 - 110, 190);
     }
 
     /**
@@ -114,7 +116,7 @@ var all_colors = [{
         this.draw = function() {
             ctx.save();
 
-ctx.font = '15px sans-serif';
+            ctx.font = '15px sans-serif';
             var colors = this.colors[this.state];
             var halfH = this.height / 2;
 
@@ -145,10 +147,10 @@ ctx.font = '15px sans-serif';
         'active': all_colors[2]
     };
 
-    var backButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 25, bw, 50, 'Back', default_colors,
-            function() {
-                document.location.href = "../";
-            });
+    var backButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 + 70, bw, 50, 'Back', default_colors,
+        function() {
+            document.location.href = "../";
+        });
 
     function animate() {
         requestAnimationFrame(animate);

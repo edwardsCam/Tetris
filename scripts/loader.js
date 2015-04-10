@@ -26,8 +26,7 @@ window.addEventListener('load', function() {
     if (Modernizr.audio.mp3 === 'probably') {
         console.log('We have MP3 support');
         GAME.audioExt = 'mp3';
-    }
-    else if (Modernizr.audio.wav === 'probably') {
+    } else if (Modernizr.audio.wav === 'probably') {
         console.log('We have WAV support');
         GAME.audioExt = 'wav';
     }
@@ -72,7 +71,7 @@ yepnope.addPrefix('preload', function(resource) {
             var image = new Image();
             image.src = resource.url;
             GAME.images[resource.url] = image;
-        } else if (isSound){
+        } else if (isSound) {
             var sound = new Audio(resource.url);
             console.log(resource.url);
             GAME.sounds[resource.url] = sound;

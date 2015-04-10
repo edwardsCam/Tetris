@@ -1,5 +1,4 @@
 // Derived from sample code taken from http://blog.sklambert.com/html5-game-tutorial-game-ui-canvas-vs-dom/
-
 var canvas = document.getElementById('canvas-hs'),
     ctx = canvas.getContext('2d');
 
@@ -22,11 +21,13 @@ var all_colors = [{
 function addScore() {
     var name = $('#id-playerName').val(),
         score = $('#id-playerScore').val();
-    
+
     $.ajax({
         url: 'http://localhost:3000/v1/high-scores?name=' + name + '&score=' + score,
         type: 'POST',
-        error: function() { alert('POST failed'); },
+        error: function() {
+            alert('POST failed');
+        },
         success: function() {
             showScores();
         }
@@ -44,17 +45,19 @@ function showScores() {
         url: 'http://localhost:3000/v1/high-scores',
         cache: false,
         type: 'GET',
-        error: function() { alert('GET failed'); },
+        error: function() {
+            alert('GET failed');
+        },
         success: function(data) {
             var list = $('#id-high-scores'),
-            value,
-            text;
-            
+                value,
+                text;
+
             list.empty();
             for (value = 0; value < data.length; value++) {
                 text = (data[value].name + ' : ' + data[value].score);
                 ctx.font = '15px sans-serif';
-                ctx.fillText(text, 100, (value+2) * 50);
+                ctx.fillText(text, 100, (value + 2) * 50);
             }
         }
     });
@@ -167,7 +170,7 @@ function showScores() {
 
             // text
             var size = ctx.measureText(this.text);
-            var x = this.x + (this.width - size.width/2) / 2;
+            var x = this.x + (this.width - size.width / 2) / 2;
             var y = this.y + (this.height - 15) / 2 + 12;
 
             ctx.fillStyle = '#FFF';
@@ -188,14 +191,14 @@ function showScores() {
     };
 
     var backButton = new Button(canvas.width / 2 - bw / 2, canvas.height / 2 - 25, bw, 50, 'Back', default_colors,
-            function() {
-                document.location.href = "../";
-            });
+        function() {
+            document.location.href = "../";
+        });
 
     function animate() {
         requestAnimationFrame(animate);
         ctx.font = '30px sans-serif';
-        ctx.fillText("High Scores", canvas.width/2 - 70, 50);
+        ctx.fillText("High Scores", canvas.width / 2 - 70, 50);
         backButton.update();
         backButton.draw();
     }

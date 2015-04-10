@@ -6,7 +6,6 @@
 // this object.
 //
 // ------------------------------------------------------------------
-
 GAME.playSound = function(whichSound) {
     GAME.sounds['audio/' + whichSound + '.' + GAME.audioExt].play();
 };
@@ -420,14 +419,14 @@ GAME.initialize = function initialize() {
         drawParticles(delta);
         drawScore();
         if (GAME.over) {
-            GAME.context.fillStyle = "rgb(150, 150, 150)";
-            GAME.context.fillRect(0, GAME.canvas.height / 2 - GAME.canvas.height / 4, GAME.canvas.width, GAME.canvas.height / 2);
+            GAME.context.fillStyle = "rgb(240, 240, 240)";
+            GAME.context.fillRect(0, GAME.canvas.height / 2 - GAME.canvas.height / 4, GAME.canvas.width, GAME.canvas.height / 3);
             GAME.context.fillStyle = "rgb(200, 0, 0)";
             GAME.context.font = '70px sans-serif';
-            GAME.context.fillText("GAME OVER", GAME.canvas.width / 2 - 160, GAME.canvas.height / 2);
+            GAME.context.fillText("GAME OVER", GAME.canvas.width / 2 - 180, GAME.canvas.height / 2);
             if (!GAME.drewNameInput) {
                 var div = document.getElementById("id-name-input-div");
-                var str = '<span class="inp-field-left" style="position:absolute;left:300px;top:225px;width:1000px;">';
+                var str = '<span class="inp-field-left" style="position:absolute;left:500px;top:225px;width:1000px;">';
                 str += 'Name: ';
                 str += '<input type="text" id="id-name-input"/>';
                 str += '<input type="submit" value="Submit" onClick="GAME.submitHighScore();"/>';
