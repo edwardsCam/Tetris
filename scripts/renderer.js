@@ -6,6 +6,15 @@
 // this object.
 //
 // ------------------------------------------------------------------
+
+GAME.playSound = function(whichSound) {
+    GAME.sounds['audio/' + whichSound + '.' + GAME.audioExt].play();
+};
+
+GAME.pauseSound = function(whichSound) {
+    GAME.sounds['audio/' + whichSound + '.' + GAME.audioExt].pause();
+};
+
 GAME.graphics = (function() {
     'use strict';
 
@@ -78,6 +87,8 @@ GAME.graphics = (function() {
 //------------------------------------------------------------------
 GAME.initialize = function initialize() {
     'use strict';
+
+    GAME.playSound("theme");
 
     var all_colors = [{
         top: '#1879BD',
@@ -311,6 +322,7 @@ GAME.initialize = function initialize() {
         GAME.currtime += delta;
         if (!GAME.paused) {
             if (GAME.lines_cleared >= GAME.level_threshold) {
+                GAME.playSound("SFX_LevelUp");
                 GAME.lines_cleared -= GAME.level_threshold;
                 GAME.level++;
                 GAME.pulse -= 50;
@@ -330,6 +342,8 @@ GAME.initialize = function initialize() {
                     if (!fall(GAME.blocks[i])) {
                         addToGround(i--);
                         GAME.newblocktimer = GAME.newblocktime;
+                    } else {
+                        GAME.playSound("SFX_PieceSoftDrop");
                     }
                 }
             }
@@ -358,23 +372,29 @@ GAME.initialize = function initialize() {
                         GAME.paused = !GAME.paused;
                     } else if (k == GAME.controls['left']) {
                         if (canMoveHoriz(active, -1)) {
+                            GAME.playSound("SFX_PieceSoftDrop");
                             move(active, -1);
                         }
                     } else if (k == GAME.controls['right']) {
                         if (canMoveHoriz(active, 1)) {
+                            GAME.playSound("SFX_PieceSoftDrop");
                             move(active, 1);
                         }
                     } else if (k == GAME.controls['soft']) {
                         if (canMoveDown(active)) {
+                            GAME.playSound("SFX_PieceSoftDrop");
                             moveDown(active, 1);
                             GAME.falltimer = 0;
                         }
                     } else if (k == GAME.controls['hard']) {
+                        GAME.playSound("SFX_PieceHardDrop");
                         hardDrop(active);
                         GAME.newblocktimer = GAME.pulse * GAME.height - 1000;
                     } else if (k == GAME.controls['counterclock']) {
+                        GAME.playSound("SFX_PieceRotateLR");
                         rotateCounterClockwise(active);
                     } else if (k == GAME.controls['clock']) {
+                        GAME.playSound("SFX_PieceRotateLR");
                         rotateClockwise(active);
                     }
                     placeBlockOnGrid(active);
@@ -600,6 +620,8 @@ GAME.initialize = function initialize() {
             GAME.pending_block = block;
         } else {
             GAME.over = true;
+            GAME.pauseSound("theme");
+            GAME.playSound("SFX_GameOver");
         }
     }
 
@@ -661,15 +683,19 @@ GAME.initialize = function initialize() {
             switch (clearcount) {
                 case 1:
                     add = 40 * GAME.level;
+                    GAME.playSound("SFX_SpecialLineClearSingle");
                     break;
                 case 2:
                     add = 100 * GAME.level;
+                    GAME.playSound("SFX_SpecialLineClearDouble");
                     break;
                 case 3:
                     add = 300 * GAME.level;
+                    GAME.playSound("SFX_SpecialLineClearTriple");
                     break;
                 case 4:
                     add = 1200 * GAME.level;
+                    GAME.playSound("SFX_SpecialLineClearTriple");
                     break;
             }
             GAME.score += add;

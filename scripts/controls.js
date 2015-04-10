@@ -6,33 +6,40 @@ function addControl() {
         switch (i) {
             case 0:
                 name = "left";
-                key = document.getElementById("id-left").value.charCodeAt(0) - 32;
+                key = document.getElementById("id-left").value;
                 break;
             case 1:
                 name = "right";
-                key = document.getElementById("id-right").value.charCodeAt(0) - 32;
+                key = document.getElementById("id-right").value;
                 break;
             case 2:
                 name = "counterclock";
-                key = document.getElementById("id-counterclockwise").value.charCodeAt(0) - 32;
+                key = document.getElementById("id-counterclockwise").value;
                 break;
             case 3:
                 name = "clock";
-                key = document.getElementById("id-clockwise").value.charCodeAt(0) - 32;
+                key = document.getElementById("id-clockwise").value;
                 break;
             case 4:
                 name = "soft";
-                key = document.getElementById("id-softdrop").value.charCodeAt(0) - 32;
+                key = document.getElementById("id-softdrop").value;
                 break;
             case 5:
                 name = "hard";
-                key = document.getElementById("id-harddrop").value.charCodeAt(0) - 32;
+                key = document.getElementById("id-harddrop").value;
                 break;
             case 6:
                 name = "pause";
-                key = document.getElementById("id-pause").value.charCodeAt(0) - 32;
+                key = document.getElementById("id-pause").value;
                 break;
         }
+        if ( isNaN( parseInt(key) )) {
+            key = key.charCodeAt(0);
+            if (key >= 97 && key <= 122) {
+                key -=32;
+            }
+        }
+        console.log(key);
         $.ajax({
             url: 'http://localhost:3000/v1/controls?name=' + name + '&key=' + key,
             type: 'PUT',
@@ -44,6 +51,7 @@ function addControl() {
             }
         });
     }
+    console.log(" ");
 
 }
 
@@ -81,7 +89,12 @@ function showControls() {
                         elem = document.getElementById("id-pause");
                         break;
                 }
-                elem.value = String.fromCharCode(32 + parseInt(data[value].key));
+                var code = data[value].key;
+                if (code >= 65 && code <= 90) {
+                    elem.value = String.fromCharCode(32 + parseInt(data[value].key));
+                } else {
+                    elem.value = parseInt(data[value].key);
+                }
             }
         }
     });
@@ -258,6 +271,8 @@ var all_colors = [{
 
         ctx.font = '30px sans-serif';
         ctx.fillText("Controls", canvas.width / 2 - 55, 50);
+        ctx.font = '20px sans-serif';
+        ctx.fillText("Enter [a-z] , or enter the keycode", canvas.width / 2 - 130, 70);
         backButton.update();
         backButton.draw();
 
